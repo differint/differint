@@ -8,4 +8,5 @@ setup(name = 'differint',
       author_email = 'Matthew.Adams@ucalgary.ca',
       license = 'MIT',
       packages = ['differint'],
-      zip_safe = False)
+      zip_safe = False
+      install_requires = ['numpy'])
