@@ -14,4 +14,5 @@ You can also specify the endpoints of your domain (default is [0,1]) and the num
 
 .. code-block:: python 
 
+    import differint
     fracderiv_f = differint.GL(0.5, func, 0., 1., 100)
