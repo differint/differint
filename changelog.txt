@@ -1,0 +1,23 @@
+# differint changelog
+
+## 0.1
+
+2017-11-22
+
+### Added
+
+  - 'GL' - calculate GL differintegral
+
+## 0.2
+
+2017-11-24
+
+### Added
+
+  - 'RLtrap' - calculate RL differintegral using trapezoid rule
+  - 'RLcoeff' - calculate coefficients for use in 'RLtrap'
+  - 'checkvalues' - check for valid inputs for algorithms
+
+### Modified
+
+  - 'GL' - now works with 'checkvalues' to validate inputs
