@@ -1,7 +1,7 @@
 from setuptools import setup
 
 def readme():
-      with open(README.rst) as f:
+      with open('README.rst') as f:
             return f.read()
 
 setup(name = 'differint',
@@ -12,8 +12,8 @@ setup(name = 'differint',
         'Development Status :: 3 - Alpha',
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3.3',
-        'Intended Audience :: Scientists',
-        'Topic :: Numerical Analysis :: Fractional Calculus',
+        'Intended Audience :: Science/Research',
+        'Topic :: Scientific/Engineering :: Mathematics',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
