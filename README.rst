@@ -1,9 +1,14 @@
 Differint
 ---------
 
+.. role:: latex(raw)
+   :format: latex
+
 This package is used for numerically calculating fractional derivatives and integrals (differintegrals). Various methods are used, which correspond to varying definitions of the differintegral.
 
-To use the Grunwald_Letnikov differintegral of order 0.5 with a user-defined function 'func', do:
+The Gr:latex:`\"u`nwald-Letnikov differintegral is defined as :latex:`$$ \lim_{N\rightarrow\infty} $$
+
+To use the Grunwald Letnikov differintegral of order 0.5 with a user-defined function 'func', do:
 
 .. code-block:: python
 
