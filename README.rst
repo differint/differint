@@ -4,7 +4,7 @@ Differint
 .. role:: latex(raw)
    :format: latex
 
-This package is used for numerically calculating fractional derivatives and integrals (differintegrals). Various methods are used, which correspond to varying definitions of the differintegral.
+This package is used for numerically calculating fractional derivatives and integrals (differintegrals). Options for varying definitions of the differintegral are available, including the Grunwald-Letnikov, the Riemann-Liouville, and the Caputo (coming soon!).
 
 To use the Grunwald-Letnikov differintegral of order 0.5 with a user-defined function 'func', do:
 
