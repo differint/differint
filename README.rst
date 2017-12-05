@@ -1,12 +1,10 @@
 Differint
----------
-
-.. role:: latex(raw)
-   :format: latex
+=========
 
 This package is used for numerically calculating fractional derivatives and integrals (differintegrals). Options for varying definitions of the differintegral are available, including the Grunwald-Letnikov, the Riemann-Liouville, and the Caputo (coming soon!).
 
-## Getting started ##
+Getting started
+---------------
 
 This package can be downloaded through the Python Package Index (PyPi) from the command line via pip.
 
@@ -14,7 +12,8 @@ This package can be downloaded through the Python Package Index (PyPi) from the 
 
    pip install differint
    
-## Using the differint Package ##
+Using the differint Package
+---------------------------
 
 To use the Grunwald-Letnikov differintegral of order 0.5 with a user-defined function 'func', do:
 
