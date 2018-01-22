@@ -1,7 +1,7 @@
 Differint
 =========
 
-This package is used for numerically calculating fractional derivatives and integrals (differintegrals). Options for varying definitions of the differintegral are available, including the Grunwald-Letnikov, the Riemann-Liouville, and the Caputo (coming soon!).
+This package is used for numerically calculating fractional derivatives and integrals (differintegrals). Options for varying definitions of the differintegral are available, including the Grunwald-Letnikov, the 'improved' Grunwald-Letnikov, the Riemann-Liouville, and the Caputo (coming soon!).
 
 Getting started
 ---------------
@@ -39,6 +39,6 @@ The Riemann-Liouville differintegral is also available, which calculates the dif
 
 .. code-block:: python
 
-   fracderiv_f_RL = differint.RLtrap(0.5, func)
+   fracderiv_f_RL = differint.RLpoint(0.5, func)
    # Or, if the data is a list or array, do:
-   fracderiv_f_RL = differint.RLtrap(0.5, f_values)
+   fracderiv_f_RL = differint.RLpoint(0.5, f_values)
