@@ -48,6 +48,10 @@ def functionCheck(f_name, domain_start, domain_end, num_points):
         step_size = (domain_end - domain_start)/(num_points-1)
     return f_values, step_size
 
+def test_func(x):
+    """ Test function for docstring examples. """
+    return 2*np.exp(3*x)*x - x**2 + x - 5
+
 def poch(a,n):
     """ Returns the Pochhammer symbol (a)_n. """
     
@@ -104,17 +108,16 @@ def GLpoint(alpha, f_name, domain_start = 0., domain_end = 1., num_points = 100)
         Examples:
         >>> DF_sqrt = GLpoint(-0.5, lambda x: np.sqrt(x))
         >>> DF_sqrt = GLpoint(0.5, lambda x: np.sqrt(x), 0., 1., 100)
-        >>> DF_sqrt = GLpoint(0.5, f, 0., 1., 100)    # Where f is defined elsewhere.
+        >>> DF_sqrt = GLpoint(0.5, test_func, 0., 1., 100)    # Where test_func is defined elsewhere.
     """
+    # Flip the domain limits if they are in the wrong order.
+    if domain_start > domain_end:
+        domain_start, domain_end = domain_end, domain_start
     
     # Check inputs.
     checkValues(alpha, domain_start, domain_end, num_points)
     f_values, step_size = functionCheck(f_name, domain_start, domain_end, num_points)
     
-    # Flip the domain limits if they are in the wrong order.
-    if domain_start > domain_end:
-        domain_start, domain_end = domain_end, domain_start
-        
     # Calculate the GL differintegral, avoiding the explicit calculation of
     # the gamma function.
     GL_previous = f_values[1]
@@ -146,19 +149,19 @@ def GL(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 100):
         Examples:
         >>> DF_poly = GL(-0.5, lambda x: x**2 - 1)
         >>> DF_sqrt = GL(0.5, lambda x: np.sqrt(x), 0., 1., 100)
-        >>> DF_sqrt = GL(0.5, f, 0., 1., 100)    # Where f is defined elsewhere.
+        >>> DF_sqrt = GL(0.5, test_func, 0., 1., 100)    # Where test_func is defined elsewhere.
     """
-    
-    # Check inputs.
-    checkValues(alpha, domain_start, domain_end, num_points)
-    f_values, step_size = functionCheck(f_name, domain_start, domain_end, num_points)
     
     # Flip the domain limits if they are in the wrong order.
     if domain_start > domain_end:
         domain_start, domain_end = domain_end, domain_start
-        
+    
+    # Check inputs.
+    checkValues(alpha, domain_start, domain_end, num_points)
+    f_values, step_size = functionCheck(f_name, domain_start, domain_end, num_points)
+       
     # Get the convolution filter.
-    b_coeffs = GLcoeffs(alpha, num_points)
+    b_coeffs = GLcoeffs(alpha, num_points-1)
     
     # Real Fourier transforms for convolution filter and array of function values.
     B = np.fft.rfft(b_coeffs)
@@ -194,18 +197,18 @@ def GLI(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 100):
             The number of points in the domain. Default value is 100.
             
         Examples:
-        >>> DF_poly = GLI(-0.5, lambda x: x**2 - 1)
-        >>> DF_sqrt = GLI(0.5, lambda x: np.sqrt(x), 0., 1., 100)
-        >>> DF_sqrt = GLI(0.5, f, 0., 1., 100)    # Where f is defined elsewhere.
+        >>> GLI_poly = GLI(-0.5, lambda x: x**2 - 1)
+        >>> GLI_sqrt = GLI(0.5, lambda x: np.sqrt(x), 0., 1., 100)
+        >>> GLI_test = GLI(0.5, test_func, 0., 1., 100)    # Where test_func is defined elsewhere.
     """
-    
-    # Check inputs.
-    checkValues(alpha, domain_start, domain_end, num_points)
-    f_values, step_size = functionCheck(f_name, domain_start, domain_end, num_points)
     
     # Flip the domain limits if they are in the wrong order.
     if domain_start > domain_end:
         domain_start, domain_end = domain_end, domain_start
+    
+    # Check inputs.
+    checkValues(alpha, domain_start, domain_end, num_points)
+    f_values, step_size = functionCheck(f_name, domain_start, domain_end, num_points)
     
     # Get interpolating values.
     IN = GLIinterpolat(0.5)
@@ -217,7 +220,7 @@ def GLI(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 100):
     # Calculate the improved GL differintegral using convolution.
     GLI = np.zeros(num_points)
     for i in range(3,num_points):
-        F = f_name[:i]
+        F = f_values[:i]
         L = len(F)
         B = b_coeffs[:(L-2)]
         G = np.convolve(F,B,'valid')
@@ -239,7 +242,7 @@ def RLcoeffs(index_k, index_j, alpha):
     else:
         return ((index_k-index_j+1)**(1-alpha)+(index_k-index_j-1)**(1-alpha)-2*(index_k-index_j)**(1-alpha))
     
-def RLpoint(alpha, f_name, domain_start = None, domain_end = None, num_points = None):
+def RLpoint(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 100):
     """Calculate the RL differintegral at a point with the trapezoid rule.
     
     Parameters
@@ -260,22 +263,22 @@ def RLpoint(alpha, f_name, domain_start = None, domain_end = None, num_points = 
         Examples:
         >>> RL_sqrt = RLpoint(0.5, lambda x: np.sqrt(x))
         >>> RL_sqrt = RLpoint(0.5, lambda x: np.sqrt(x), 0., 1., 100)
-        >>> RL_sqrt = RLpoint(-0.5, f, 0., 1., 100)    # Where f is defined elsewhere.
+        >>> RL_sqrt = RLpoint(-0.5, test_func, 0., 1., 100)    # Where test_func is defined elsewhere.
     """
-    
-    # Check inputs.
-    checkValues(alpha, domain_start, domain_end, num_points)
-    f_values, step_size = functionCheck(f_name, domain_start, domain_end, num_points)
     
     # Flip the domain limits if they are in the wrong order.
     if domain_start > domain_end:
         domain_start, domain_end = domain_end, domain_start
     
+    # Check inputs.
+    checkValues(alpha, domain_start, domain_end, num_points)
+    f_values, step_size = functionCheck(f_name, domain_start, domain_end, num_points)
+    
     C = 1/math.gamma(2-alpha)
     
     RL = 0
-    for index_j in range(num_points+1):
-        coeff = RLcoeffs(num_points, index_j, alpha)
+    for index_j in range(num_points):
+        coeff = RLcoeffs(num_points-1, index_j, alpha)
         RL += coeff*f_values[index_j]
         
     RL *= C*step_size**-alpha
@@ -324,13 +327,13 @@ def RL(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 100):
         >>> RL_poly = RL(-0.5, lambda x: x**2 - 1, 0., 1., 100)
     """
     
-    # Check inputs.
-    checkValues(alpha, domain_start, domain_end, num_points)
-    f_values, step_size = functionCheck(f_name, domain_start, domain_end, num_points)
-    
     # Flip the domain limits if they are in the wrong order.
     if domain_start > domain_end:
         domain_start, domain_end = domain_end, domain_start
+    
+    # Check inputs.
+    checkValues(alpha, domain_start, domain_end, num_points)
+    f_values, step_size = functionCheck(f_name, domain_start, domain_end, num_points)
     
     # Calculate the RL differintegral.
     D = RLmatrix(alpha, num_points)
