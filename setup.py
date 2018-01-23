@@ -25,4 +25,7 @@ setup(name = 'differint',
       packages = ['differint'],
       zip_safe = False,
       include_package_data = True,
-      install_requires = ['numpy'])
+      install_requires = ['numpy'],
+      test_suite = 'nose.collector',
+      tests_require = [nose]
+     )
