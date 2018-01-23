@@ -6,18 +6,16 @@ import differint
 poch_first_argument = 1
 poch_second_argument = 5
 poch_true_answer = 120
-size_matrix = 15
 size_coefficient_array = 20
-
 test_N = 512
-
 sqrtpi2 = 0.88622692545275794
 truevaluepoly = 0.94031597258
 
 INTER = GLIinterpolat(1)
 
 stepsize = 1/(test_N-1)
-checked_function, test_stepsize = functionCheck(test_func,0,1,test_N)
+checked_function1, test_stepsize1 = functionCheck(test_func,0,1,test_N)
+checked_function2, test_stepsize2 = functionCheck(np.ones(test_N),0,1,test_N)
 
 # Get results for checking accuracy.
 GL_r = GL(0.5, lambda x: np.sqrt(x), 0, 1, test_N)
@@ -42,11 +40,24 @@ class HelperTestCases(unittest.TestCase):
         self.assertEqual(poch(poch_first_argument, poch_second_argument), poch_true_answer)
         
     def test_functionCheck(self):
-        self.assertEqual(len(checked_function), test_N)
-        self.assertEqual(test_stepsize, stepsize)
+        self.assertEqual(len(checked_function1), test_N)
+        self.assertEqual(len(checked_function2), test_N)
+        
+        # Make sure it treats defined functions and arrays of function values the same.
+        self.assertEqual(len(checked_function1), len(checked_function2))
+        self.assertEqual(test_stepsize1, stepsize)
+        self.assertEqual(test_stepsize2, stepsize)
+        self.assertEqual(test_stepsize1, test_stepsize2)
         
     def test_GL_binomial_coefficient_array_size(self):
         self.assertEqual(len(GLcoeffs(0.5,size_coefficient_array))-1,size_coefficient_array)
+        
+    def test_checkValues(self):
+        with self.assertRaises(AssertionError):
+            checkValues(0.1, 0, 1, 1.1)
+            checkValues(0.1, 1j, 2, 100)
+            checkValues(0.1, 1, 2j, 100)
+            checkValues(1+1j, 1, 2, 100)
         
 class TestInterpolantCoefficients(unittest.TestCase):
     """ Test the correctness of the interpolant coefficients. """
@@ -63,6 +74,9 @@ class TestAlgorithms(unittest.TestCase):
     
     def test_RL_result_length(self):
         self.assertEqual(RL_length, test_N)
+        
+    def test_RL_matrix_shape(self):
+        self.assertTrue(np.shape(RLmatrix(0.4, test_N)) == (test_N, test_N))
     
     """ Tests for algorithm accuracy. """
     
