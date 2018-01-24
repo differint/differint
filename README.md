@@ -69,7 +69,7 @@ GLIinterpolat | Define interpolating coefficients for the improved GL algorithm
 functionCheck | Determines if algorithm function input is callable or an array of numbers
 test_func | Testing function for docstring examples
 poch | Computes the Pochhammer symbol
-GLcoeffs | Determines the convolution filter used in the GL algorithm
+GLcoeffs | Determines the convolution filter composed of generalized binomial coefficients used in the GL algorithm
 RLcoeffs | Calculates the coefficients used in the RLpoint and RL algorithms
 RLmatrix | Determines the matrix used in the RL algorithm
 
