@@ -43,31 +43,17 @@ The Riemann-Liouville differintegral is also available, which calculates the dif
    # Or, if the data is a list or array, do:
    fracderiv_f_RL = differint.RLpoint(0.5, f_values)
 
-## Project title
-A little info about your project and/ or overview that explains **what** the project is about.
+## differint
+This package is used for numerically calculating fractional derivatives and integrals (differintegrals). Options for varying definitions of the differintegral are available, including the Grunwald-Letnikov, the 'improved' Grunwald-Letnikov, the Riemann-Liouville, and the Caputo (coming soon!). Through the API, you can compute the fractional derivative at a point or over an array of function values.
 
 ## Motivation
-A short description of the motivation behind the creation and maintenance of the project. This should explain **why** the project exists.
+There is little in the way of readily available, easy-to-use code for numerical fractional calculus. The *differint* package offers a variety of algorithms for computing differintegrals and several auxiliary functions relating to generalized binomial coefficients.
 
 ## Build status
 Build status of continus integration i.e. travis, appveyor etc. Ex. - 
 
 [![Build Status](https://travis-ci.org/akashnimare/foco.svg?branch=master)](https://travis-ci.org/akashnimare/foco)
 [![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/akashnimare/foco?branch=master&svg=true)](https://ci.appveyor.com/project/akashnimare/foco/branch/master)
-
-## Code style
-If you're using any code style like xo, standard etc. That will help others while contributing to your project. Ex. -
-
-[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](https://github.com/feross/standard)
- 
-## Screenshots
-Include logo/demo screenshot etc.
-
-## Tech/framework used
-Ex. -
-
-<b>Built with</b>
-- [Electron](https://electron.atom.io)
 
 ## Features
 What makes your project stand out?
@@ -76,7 +62,11 @@ What makes your project stand out?
 Show what the library does as concisely as possible, developers should be able to figure out **how** your project solves their problem by looking at the code example. Make sure the API you are showing off is obvious, and that your code is short and concise.
 
 ## Installation
-Provide step by step series of examples and explanations about how to get a development env running.
+Installation from the Python Packaging index (https://pypi.python.org/pypi) is simple using pip.
+
+```python
+pip install differint
+```
 
 ## API Reference
 
