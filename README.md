@@ -1,5 +1,5 @@
 ## differint
-This package is used for numerically calculating fractional derivatives and integrals (differintegrals). Options for varying definitions of the differintegral are available, including the Grunwald-Letnikov, the 'improved' Grunwald-Letnikov, the Riemann-Liouville, and the Caputo (coming soon!). Through the API, you can compute the fractional derivative at a point or over an array of function values.
+This package is used for numerically calculating fractional derivatives and integrals (differintegrals). Options for varying definitions of the differintegral are available, including the Grunwald-Letnikov (GL), the 'improved' Grunwald-Letnikov (GLI), the Riemann-Liouville (RL), and the Caputo (coming soon!). Through the API, you can compute the fractional derivative at a point or over an array of function values.
 
 ## Motivation
 There is little in the way of readily available, easy-to-use code for numerical fractional calculus. What is currently available are functions that are generally either smart parts of a much larger package, or only offer one numerical algorithm. The *differint* package offers a variety of algorithms for computing differintegrals and several auxiliary functions relating to generalized binomial coefficients.
@@ -36,10 +36,6 @@ You can also specify the endpoints of the domain and the number of points used a
 DF = df.RL(0.5, f, 0, 1, 128)
 ```
 
-## API Reference
-
-In this section we cover the usage of the various functions within the *differint* package.
-
 ## Tests
 All tests can be run with nose from the command line. Setup will automatically install nose if it is not present on your machine.
 
@@ -54,6 +50,26 @@ cd <file_path>/differint/tests/
 python test.py
 ```
 
+## API Reference
+In this section we cover the usage of the various functions within the *differint* package.
+
+Function | Usage
+-------- | -----
+GLIinterpolat | Define interpolating coefficients for the improved GL algorithm
+isInteger | Determine if a number is an integer
+checkValues | Used to check for valid algorithm input types
+functionCheck | Determines if algorithm function input is callable or an array of numbers
+test_func | Testing function for docstring examples
+poch | Computes the Pochhammer symbol
+GLcoeffs | Determines the convolution filter used in the GL algorithm
+GLpoint | Computes the GL differintegral at a point
+GL | Computes the GL differintegral over an entire array of function values using the Fast Fourier Transform
+GLI | Computes the improved GL differintegral over an entire array of function values
+RLcoeffs | Calculates the coefficients used in the RL algorithm
+RLpoint | Computes the RL differintegral at a point
+RLmatrix | Determines the matrix used in the RL algorithm
+RL | Computes the RL differintegral over an entire array of function values using matrix methods
+
 ## How to use?
 If people like your project they’ll want to learn how they can use it. To do so include step by step guide to use your project.
 
@@ -64,7 +80,7 @@ To contribute to this project, see the [contributing guidelines](https://github.
 ## Credits
 Baleanu, D., Diethelm, K., Scalas, E., & Trujillo, J.J. (2012). Fractional Calculus: Models and Numerical Methods. World Scientific.
 
-Oldham, K.B. & Spanier, J. (1974). The Fractional Calculus: Theory and Applications of Differentiation and Integration to Arbitrary Order. 
+Oldham, K.B. & Spanier, J. (1974). The Fractional Calculus: Theory and Applications of Differentiation and Integration to Arbitrary Order. Academic Press Inc. 
 
 ## License
 
