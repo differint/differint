@@ -47,7 +47,7 @@ The Riemann-Liouville differintegral is also available, which calculates the dif
 This package is used for numerically calculating fractional derivatives and integrals (differintegrals). Options for varying definitions of the differintegral are available, including the Grunwald-Letnikov, the 'improved' Grunwald-Letnikov, the Riemann-Liouville, and the Caputo (coming soon!). Through the API, you can compute the fractional derivative at a point or over an array of function values.
 
 ## Motivation
-There is little in the way of readily available, easy-to-use code for numerical fractional calculus. The *differint* package offers a variety of algorithms for computing differintegrals and several auxiliary functions relating to generalized binomial coefficients.
+There is little in the way of readily available, easy-to-use code for numerical fractional calculus. What is currently available are functions that are generally either smart parts of a much larger package, or only offer one numerical algorithm. The *differint* package offers a variety of algorithms for computing differintegrals and several auxiliary functions relating to generalized binomial coefficients.
 
 ## Build status
 Build status of continus integration i.e. travis, appveyor etc. Ex. - 
@@ -59,7 +59,7 @@ Build status of continus integration i.e. travis, appveyor etc. Ex. -
 What makes your project stand out?
 
 ## Code Example
-Show what the library does as concisely as possible, developers should be able to figure out **how** your project solves their problem by looking at the code example. Make sure the API you are showing off is obvious, and that your code is short and concise.
+Taking a fractional derivative is easy with the *differint* package. For the function $f(x) = \sqrt{x}$, we will take the 1/2 derivative on the interval [0,2].
 
 ## Installation
 Installation from the Python Packaging index (https://pypi.python.org/pypi) is simple using pip.
@@ -88,6 +88,5 @@ Give proper credits. This could be a link to any repo which inspired you to buil
 #### Anything else that seems useful
 
 ## License
-A short snippet describing the license (MIT, Apache etc)
 
 MIT © [Yourname]()
