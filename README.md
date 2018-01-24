@@ -1,5 +1,5 @@
 ## differint
-This package is used for numerically calculating fractional derivatives and integrals (differintegrals). Options for varying definitions of the differintegral are available, including the Grunwald-Letnikov (GL), the 'improved' Grunwald-Letnikov (GLI), the Riemann-Liouville (RL), and the Caputo (coming soon!). Through the API, you can compute the fractional derivative at a point or over an array of function values.
+This package is used for numerically calculating fractional derivatives and integrals (differintegrals). Options for varying definitions of the differintegral are available, including the Grunwald-Letnikov (GL), the 'improved' Grunwald-Letnikov (GLI), the Riemann-Liouville (RL), and the Caputo (coming soon!). Through the API, you can compute differintegrals at a point or over an array of function values.
 
 ## Motivation
 There is little in the way of readily available, easy-to-use code for numerical fractional calculus. What is currently available are functions that are generally either smart parts of a much larger package, or only offer one numerical algorithm. The *differint* package offers a variety of algorithms for computing differintegrals and several auxiliary functions relating to generalized binomial coefficients.
