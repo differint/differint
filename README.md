@@ -59,7 +59,7 @@ If people like your project they’ll want to learn how they can use it. To do s
 
 ## Contribute
 
-To contribute to this project, see the [contributing guidelines](https://github.com/snimpids/differint/CONTRIBUTING.md).
+To contribute to this project, see the [contributing guidelines](https://github.com/snimpids/differint/blob/master/CONTRIBUTING.md).
 
 ## Credits
 Baleanu, D., Diethelm, K., Scalas, E., & Trujillo, J.J. (2012). Fractional Calculus: Models and Numerical Methods. World Scientific.
