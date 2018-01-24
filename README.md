@@ -53,22 +53,25 @@ python test.py
 ## API Reference
 In this section we cover the usage of the various functions within the *differint* package.
 
-Function | Usage
--------- | -----
-GLIinterpolat | Define interpolating coefficients for the improved GL algorithm
+Main Function | Usage
+------------- | -----
+GLpoint | Computes the GL differintegral at a point
+GL | Computes the GL differintegral over an entire array of function values using the Fast Fourier Transform
+GLI | Computes the improved GL differintegral over an entire array of function values
+RLpoint | Computes the RL differintegral at a point
+RL | Computes the RL differintegral over an entire array of function values using matrix methods
+
+Auxiliary Function | Usage
+------------------ | -----
 isInteger | Determine if a number is an integer
 checkValues | Used to check for valid algorithm input types
+GLIinterpolat | Define interpolating coefficients for the improved GL algorithm
 functionCheck | Determines if algorithm function input is callable or an array of numbers
 test_func | Testing function for docstring examples
 poch | Computes the Pochhammer symbol
 GLcoeffs | Determines the convolution filter used in the GL algorithm
-GLpoint | Computes the GL differintegral at a point
-GL | Computes the GL differintegral over an entire array of function values using the Fast Fourier Transform
-GLI | Computes the improved GL differintegral over an entire array of function values
-RLcoeffs | Calculates the coefficients used in the RL algorithm
-RLpoint | Computes the RL differintegral at a point
+RLcoeffs | Calculates the coefficients used in the RLpoint and RL algorithms
 RLmatrix | Determines the matrix used in the RL algorithm
-RL | Computes the RL differintegral over an entire array of function values using matrix methods
 
 ## How to use?
 If people like your project they’ll want to learn how they can use it. To do so include step by step guide to use your project.
