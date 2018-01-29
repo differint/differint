@@ -74,7 +74,7 @@ RLcoeffs | Calculates the coefficients used in the RLpoint and RL algorithms
 RLmatrix | Determines the matrix used in the RL algorithm
 
 ## How to use?
-If people like your project they’ll want to learn how they can use it. To do so include step by step guide to use your project.
+
 
 ## Contribute
 
