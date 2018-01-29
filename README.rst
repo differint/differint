@@ -170,6 +170,11 @@ In this section we cover the usage of the various functions within the
 |                                                       | RL           |
 |                                                       | algorithms   |
 +-------------------------------------------------------+--------------+
+| RLmatrix                                              | Determines   |
+|                                                       | the matrix   |
+|                                                       | used in the  |
+|                                                       | RL algorithm |
++-------------------------------------------------------+--------------+
 
 Contribute
 ----------
