@@ -4,9 +4,6 @@ This package is used for numerically calculating fractional derivatives and inte
 ## Motivation
 There is little in the way of readily available, easy-to-use code for numerical fractional calculus. What is currently available are functions that are generally either smart parts of a much larger package, or only offer one numerical algorithm. The *differint* package offers a variety of algorithms for computing differintegrals and several auxiliary functions relating to generalized binomial coefficients.
 
-## Features
-What makes your project stand out?
-
 ## Installation
 This project requires Python 3+ and NumPy to run.
 
