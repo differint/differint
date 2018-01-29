@@ -170,3 +170,26 @@ In this section we cover the usage of the various functions within the
 |                                                       | RL           |
 |                                                       | algorithms   |
 +-------------------------------------------------------+--------------+
+
+Contribute
+----------
+
+To contribute to this project, see the `contributing guidelines`_.
+
+Credits
+-------
+
+Baleanu, D., Diethelm, K., Scalas, E., & Trujillo, J.J. (2012).
+Fractional Calculus: Models and Numerical Methods. World Scientific.
+
+Oldham, K.B. & Spanier, J. (1974). The Fractional Calculus: Theory and
+Applications of Differentiation and Integration to Arbitrary Order.
+Academic Press Inc.
+
+License
+-------
+
+MIT © `Matthew Adams`_
+
+.. _contributing guidelines: https://github.com/snimpids/differint/blob/master/CONTRIBUTING.md
+.. _Matthew Adams: 2018
