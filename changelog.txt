@@ -21,3 +21,23 @@
 ### Modified
 
   - 'GL' - now works with 'checkvalues' to validate inputs
+  
+2018-01-29
+
+### Added
+  
+  - 'GLI' - calculate improved GL differintegral
+  - Unit tests for all core and auxiliary functions
+  - 'GLIinterpolat' calculate interpolation coefficients for GLI algorithm
+  - 'isInteger' for integer typechecking
+  - 'functionCheck' for checking function input
+  - 'test_func' for unittesting
+  - 'RL' for calculating RL algorithm over array of function values
+  - 'GL' for calculating GL algorithm over array of function values
+
+### Modified
+
+  - 'GL' now uses DFT for faster computation
+  - 'GL' changed to 'GLpoint'
+  - 'RLtrap' now called 'RLpoint'
+  
