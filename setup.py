@@ -5,11 +5,11 @@ def readme():
             return f.read()
 
 setup(name = 'differint',
-      version = '0.2',
+      version = '0.3',
       description = 'Collection of algorithms for numerically calculating fractional derivatives.',
       long_description = readme(),
       classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3.3',
         'Intended Audience :: Science/Research',
@@ -18,7 +18,7 @@ setup(name = 'differint',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
       ],
-      url = 'http://github.com/snimpids/differint',
+      url = 'http://github.com/differint/differint',
       author = 'Matthew Adams',
       author_email = 'Matthew.Adams@ucalgary.ca',
       license = 'MIT',
@@ -27,5 +27,5 @@ setup(name = 'differint',
       include_package_data = True,
       install_requires = ['numpy'],
       test_suite = 'nose.collector',
-      tests_require = [nose]
+      tests_require = ['nose']
      )
