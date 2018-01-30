@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-import differint
+from differint.differint import *
 
 # Define constants to be used in tests.
 poch_first_argument = 1
@@ -14,7 +14,9 @@ truevaluepoly = 0.94031597258
 INTER = GLIinterpolat(1)
 
 stepsize = 1/(test_N-1)
-checked_function1, test_stepsize1 = functionCheck(test_func,0,1,test_N)
+
+# Testing if callable functions and arrays of function values will work.
+checked_function1, test_stepsize1 = functionCheck(lambda x: 2*np.exp(3*x)*x - x**2 + x - 5,0,1,test_N)
 checked_function2, test_stepsize2 = functionCheck(np.ones(test_N),0,1,test_N)
 
 # Get results for checking accuracy.

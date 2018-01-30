@@ -1,19 +1,6 @@
 import numpy as np
 import math
 
-class GLIinterpolat:
-    """ Class for computing interpolation of function values for the 
-        improved GL algorithm. 
-        
-        Using a class here helps avoid type flexibility for these constants.
-        """
-    
-    def __init__(self,alpha):
-        # Determine coefficients for quadratic interpolation.
-        self.nxt = alpha*(2+alpha)/8
-        self.crr = (4-alpha*alpha)/4
-        self.prv = alpha*(alpha-2)/8
-
 def isInteger(n):
     assert (n >= 0 and (type(n) is type(0))), "n must be a positive integer or zero: %r" % n
 
@@ -47,10 +34,6 @@ def functionCheck(f_name, domain_start, domain_end, num_points):
         f_values = f_name
         step_size = (domain_end - domain_start)/(num_points-1)
     return f_values, step_size
-
-def test_func(x):
-    """ Test function for docstring examples. """
-    return 2*np.exp(3*x)*x - x**2 + x - 5
 
 def poch(a,n):
     """ Returns the Pochhammer symbol (a)_n. """
@@ -106,9 +89,8 @@ def GLpoint(alpha, f_name, domain_start = 0., domain_end = 1., num_points = 100)
             The number of points in the domain. Default value is 100.
             
         Examples:
-        >>> DF_sqrt = GLpoint(-0.5, lambda x: np.sqrt(x))
+        >>> DF_poly = GLpoint(-0.5, lambda x: 3*x**2 - 9*x + 2)
         >>> DF_sqrt = GLpoint(0.5, lambda x: np.sqrt(x), 0., 1., 100)
-        >>> DF_sqrt = GLpoint(0.5, test_func, 0., 1., 100)    # Where test_func is defined elsewhere.
     """
     # Flip the domain limits if they are in the wrong order.
     if domain_start > domain_end:
@@ -149,7 +131,6 @@ def GL(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 100):
         Examples:
         >>> DF_poly = GL(-0.5, lambda x: x**2 - 1)
         >>> DF_sqrt = GL(0.5, lambda x: np.sqrt(x), 0., 1., 100)
-        >>> DF_sqrt = GL(0.5, test_func, 0., 1., 100)    # Where test_func is defined elsewhere.
     """
     
     # Flip the domain limits if they are in the wrong order.
@@ -199,7 +180,6 @@ def GLI(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 100):
         Examples:
         >>> GLI_poly = GLI(-0.5, lambda x: x**2 - 1)
         >>> GLI_sqrt = GLI(0.5, lambda x: np.sqrt(x), 0., 1., 100)
-        >>> GLI_test = GLI(0.5, test_func, 0., 1., 100)    # Where test_func is defined elsewhere.
     """
     
     # Flip the domain limits if they are in the wrong order.
@@ -262,8 +242,7 @@ def RLpoint(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 10
             
         Examples:
         >>> RL_sqrt = RLpoint(0.5, lambda x: np.sqrt(x))
-        >>> RL_sqrt = RLpoint(0.5, lambda x: np.sqrt(x), 0., 1., 100)
-        >>> RL_sqrt = RLpoint(-0.5, test_func, 0., 1., 100)    # Where test_func is defined elsewhere.
+        >>> RL_poly = RLpoint(0.5, lambda x: x**2 - 4*x - 1, 0., 1., 100)
     """
     
     # Flip the domain limits if they are in the wrong order.
@@ -323,8 +302,7 @@ def RL(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 100):
     
     Examples:
         >>> RL_sqrt = RL(0.5, lambda x: np.sqrt(x))
-        >>> RL_sqrt = RL(0.5, lambda x: np.sqrt(x), 0., 1., 100)
-        >>> RL_poly = RL(-0.5, lambda x: x**2 - 1, 0., 1., 100)
+        >>> RL_poly = RL(0.5, lambda x: x**2 - 1, 0., 1., 100)
     """
     
     # Flip the domain limits if they are in the wrong order.
@@ -339,3 +317,16 @@ def RL(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 100):
     D = RLmatrix(alpha, num_points)
     RL = step_size**-alpha*np.dot(D, f_values)
     return RL
+
+class GLIinterpolat:
+    """ Class for computing interpolation of function values for the 
+        improved GL algorithm. 
+        
+        Using a class here helps avoid type flexibility for these constants.
+        """
+    
+    def __init__(self,alpha):
+        # Determine coefficients for quadratic interpolation.
+        self.nxt = alpha*(2+alpha)/8
+        self.crr = (4-alpha*alpha)/4
+        self.prv = alpha*(alpha-2)/8
