@@ -1,6 +1,8 @@
 import unittest
 import numpy as np
-from differint.differint import *
+
+# Import from sibling directory.
+from ..differint.differint import *
 
 # Define constants to be used in tests.
 poch_first_argument = 1
