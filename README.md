@@ -18,7 +18,7 @@ Taking a fractional derivative is easy with the *differint* package. Let's take 
 
 ```python
 import numpy as np
-import differint as df
+import differint.differint as df
 
 def f(x):
    return x**0.5
