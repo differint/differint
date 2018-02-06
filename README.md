@@ -13,6 +13,26 @@ Installation from the Python Packaging index (https://pypi.python.org/pypi) is s
 pip install differint
 ```
 
+## Included Files
+Core File | Description
+--------- | -----------
+differint/differint.py | Contains algorithms for fractional differentiation and integration.
+tests/test.py | Testing suite containing all unit tests.
+
+Both of the above files have corresponding `__init__.py` files.
+
+Setup File | Description
+---------- | -----------
+.gitignore | List of files to ignore during `git` push/pull requests.
+CONTRIBUTING.md | Instructions for potential contributors to the *differint* project.
+LICENSE | MIT license agreement.
+MANIFEST.in | Selects the README file for uploading to PyPi.
+README.md | This README file.
+README.rst | This README file in ReStructuredText format.
+__init__.py | `__init__` file for overall package.
+changelog.txt | List of updates to package.
+setup.py | Script for downloading package from `pip`.
+
 ## Example Usage
 Taking a fractional derivative is easy with the *differint* package. Let's take the 1/2 derivative of the square root function on the interval [0,1], using the Riemann-Liouville definition of the fractional derivative.
 
@@ -70,11 +90,7 @@ GLcoeffs | Determines the convolution filter composed of generalized binomial co
 RLcoeffs | Calculates the coefficients used in the RLpoint and RL algorithms
 RLmatrix | Determines the matrix used in the RL algorithm
 
-## How to use?
-
-
 ## Contribute
-
 To contribute to this project, see the [contributing guidelines](https://github.com/snimpids/differint/blob/master/CONTRIBUTING.md).
 
 ## Credits
