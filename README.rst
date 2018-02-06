@@ -4,7 +4,7 @@ differint
 This package is used for numerically calculating fractional derivatives
 and integrals (differintegrals). Options for varying definitions of the
 differintegral are available, including the Grunwald-Letnikov (GL), the
-‘improved’ Grunwald-Letnikov (GLI), the Riemann-Liouville (RL), and the
+'improved' Grunwald-Letnikov (GLI), the Riemann-Liouville (RL), and the
 Caputo (coming soon!). Through the API, you can compute differintegrals
 at a point or over an array of function values.
 
@@ -30,11 +30,87 @@ Installation from the Python Packaging index
 
     pip install differint
 
+Included Files
+--------------
+
++------------+--------------+
+| Core File  | Description  |
++============+==============+
+| differint/ | Contains     |
+| differint. | algorithms   |
+| py         | for          |
+|            | fractional   |
+|            | differentiat |
+|            | ion          |
+|            | and          |
+|            | integration. |
++------------+--------------+
+| tests/test | Testing      |
+| .py        | suite        |
+|            | containing   |
+|            | all unit     |
+|            | tests.       |
++------------+--------------+
+
+Both of the above files have corresponding ``__init__.py`` files.
+
++-------------+--------------+
+| Setup File  | Description  |
++=============+==============+
+| .gitignore  | List of      |
+|             | files to     |
+|             | ignore       |
+|             | during       |
+|             | ``git``      |
+|             | push/pull    |
+|             | requests.    |
++-------------+--------------+
+| CONTRIBUTIN | Instructions |
+| G.md        | for          |
+|             | potential    |
+|             | contributors |
+|             | to the       |
+|             | *differint*  |
+|             | project.     |
++-------------+--------------+
+| LICENSE     | MIT license  |
+|             | agreement.   |
++-------------+--------------+
+| MANIFEST.in | Selects the  |
+|             | README file  |
+|             | for          |
+|             | uploading to |
+|             | PyPi.        |
++-------------+--------------+
+| README.md   | This README  |
+|             | file.        |
++-------------+--------------+
+| README.rst  | This README  |
+|             | file in      |
+|             | ReStructured |
+|             | Text         |
+|             | format.      |
++-------------+--------------+
+| **init**.py | ``__init__`` |
+|             | file for     |
+|             | overall      |
+|             | package.     |
++-------------+--------------+
+| changelog.t | List of      |
+| xt          | updates to   |
+|             | package.     |
++-------------+--------------+
+| setup.py    | Script for   |
+|             | downloading  |
+|             | package from |
+|             | ``pip``.     |
++-------------+--------------+
+
 Example Usage
 -------------
 
 Taking a fractional derivative is easy with the *differint* package.
-Let’s take the 1/2 derivative of the square root function on the
+Let's take the 1/2 derivative of the square root function on the
 interval [0,1], using the Riemann-Liouville definition of the fractional
 derivative.
 
@@ -79,107 +155,206 @@ API Reference
 In this section we cover the usage of the various functions within the
 *differint* package.
 
-+---------------------------------------------------+-------------------+
-| Main Function                                     | Usage             |
-+===================================================+===================+
-| GLpoint                                           | Computes the GL   |
-|                                                   | differintegral at |
-|                                                   | a point           |
-+---------------------------------------------------+-------------------+
-| GL                                                | Computes the GL   |
-|                                                   | differintegral    |
-|                                                   | over an entire    |
-|                                                   | array of function |
-|                                                   | values using the  |
-|                                                   | Fast Fourier      |
-|                                                   | Transform         |
-+---------------------------------------------------+-------------------+
-| GLI                                               | Computes the      |
-|                                                   | improved GL       |
-|                                                   | differintegral    |
-|                                                   | over an entire    |
-|                                                   | array of function |
-|                                                   | values            |
-+---------------------------------------------------+-------------------+
-| RLpoint                                           | Computes the RL   |
-|                                                   | differintegral at |
-|                                                   | a point           |
-+---------------------------------------------------+-------------------+
-| RL                                                | Computes the RL   |
-|                                                   | differintegral    |
-|                                                   | over an entire    |
-|                                                   | array of function |
-|                                                   | values using      |
-|                                                   | matrix methods    |
-+---------------------------------------------------+-------------------+
++----------------+--------+
+| Main Function  | Usage  |
++================+========+
+| GLpoint        | Comput |
+|                | es     |
+|                | the GL |
+|                | differ |
+|                | integr |
+|                | al     |
+|                | at a   |
+|                | point  |
++----------------+--------+
+| GL             | Comput |
+|                | es     |
+|                | the GL |
+|                | differ |
+|                | integr |
+|                | al     |
+|                | over   |
+|                | an     |
+|                | entire |
+|                | array  |
+|                | of     |
+|                | functi |
+|                | on     |
+|                | values |
+|                | using  |
+|                | the    |
+|                | Fast   |
+|                | Fourie |
+|                | r      |
+|                | Transf |
+|                | orm    |
++----------------+--------+
+| GLI            | Comput |
+|                | es     |
+|                | the    |
+|                | improv |
+|                | ed     |
+|                | GL     |
+|                | differ |
+|                | integr |
+|                | al     |
+|                | over   |
+|                | an     |
+|                | entire |
+|                | array  |
+|                | of     |
+|                | functi |
+|                | on     |
+|                | values |
++----------------+--------+
+| RLpoint        | Comput |
+|                | es     |
+|                | the RL |
+|                | differ |
+|                | integr |
+|                | al     |
+|                | at a   |
+|                | point  |
++----------------+--------+
+| RL             | Comput |
+|                | es     |
+|                | the RL |
+|                | differ |
+|                | integr |
+|                | al     |
+|                | over   |
+|                | an     |
+|                | entire |
+|                | array  |
+|                | of     |
+|                | functi |
+|                | on     |
+|                | values |
+|                | using  |
+|                | matrix |
+|                | method |
+|                | s      |
++----------------+--------+
 
-+-------------------------------------------------------+--------------+
-| Auxiliary Function                                    | Usage        |
-+=======================================================+==============+
-| isInteger                                             | Determine if |
-|                                                       | a number is  |
-|                                                       | an integer   |
-+-------------------------------------------------------+--------------+
-| checkValues                                           | Used to      |
-|                                                       | check for    |
-|                                                       | valid        |
-|                                                       | algorithm    |
-|                                                       | input types  |
-+-------------------------------------------------------+--------------+
-| GLIinterpolat                                         | Define       |
-|                                                       | interpolatin |
-|                                                       | g            |
-|                                                       | coefficients |
-|                                                       | for the      |
-|                                                       | improved GL  |
-|                                                       | algorithm    |
-+-------------------------------------------------------+--------------+
-| functionCheck                                         | Determines   |
-|                                                       | if algorithm |
-|                                                       | function     |
-|                                                       | input is     |
-|                                                       | callable or  |
-|                                                       | an array of  |
-|                                                       | numbers      |
-+-------------------------------------------------------+--------------+
-| test_func                                             | Testing      |
-|                                                       | function for |
-|                                                       | docstring    |
-|                                                       | examples     |
-+-------------------------------------------------------+--------------+
-| poch                                                  | Computes the |
-|                                                       | Pochhammer   |
-|                                                       | symbol       |
-+-------------------------------------------------------+--------------+
-| GLcoeffs                                              | Determines   |
-|                                                       | the          |
-|                                                       | convolution  |
-|                                                       | filter       |
-|                                                       | composed of  |
-|                                                       | generalized  |
-|                                                       | binomial     |
-|                                                       | coefficients |
-|                                                       | used in the  |
-|                                                       | GL algorithm |
-+-------------------------------------------------------+--------------+
-| RLcoeffs                                              | Calculates   |
-|                                                       | the          |
-|                                                       | coefficients |
-|                                                       | used in the  |
-|                                                       | RLpoint and  |
-|                                                       | RL           |
-|                                                       | algorithms   |
-+-------------------------------------------------------+--------------+
-| RLmatrix                                              | Determines   |
-|                                                       | the matrix   |
-|                                                       | used in the  |
-|                                                       | RL algorithm |
-+-------------------------------------------------------+--------------+
++---------------------+--------+
+| Auxiliary Function  | Usage  |
++=====================+========+
+| isInteger           | Determ |
+|                     | ine    |
+|                     | if a   |
+|                     | number |
+|                     | is an  |
+|                     | intege |
+|                     | r      |
++---------------------+--------+
+| checkValues         | Used   |
+|                     | to     |
+|                     | check  |
+|                     | for    |
+|                     | valid  |
+|                     | algori |
+|                     | thm    |
+|                     | input  |
+|                     | types  |
++---------------------+--------+
+| GLIinterpolat       | Define |
+|                     | interp |
+|                     | olatin |
+|                     | g      |
+|                     | coeffi |
+|                     | cients |
+|                     | for    |
+|                     | the    |
+|                     | improv |
+|                     | ed     |
+|                     | GL     |
+|                     | algori |
+|                     | thm    |
++---------------------+--------+
+| functionCheck       | Determ |
+|                     | ines   |
+|                     | if     |
+|                     | algori |
+|                     | thm    |
+|                     | functi |
+|                     | on     |
+|                     | input  |
+|                     | is     |
+|                     | callab |
+|                     | le     |
+|                     | or an  |
+|                     | array  |
+|                     | of     |
+|                     | number |
+|                     | s      |
++---------------------+--------+
+| test\_func          | Testin |
+|                     | g      |
+|                     | functi |
+|                     | on     |
+|                     | for    |
+|                     | docstr |
+|                     | ing    |
+|                     | exampl |
+|                     | es     |
++---------------------+--------+
+| poch                | Comput |
+|                     | es     |
+|                     | the    |
+|                     | Pochha |
+|                     | mmer   |
+|                     | symbol |
++---------------------+--------+
+| GLcoeffs            | Determ |
+|                     | ines   |
+|                     | the    |
+|                     | convol |
+|                     | ution  |
+|                     | filter |
+|                     | compos |
+|                     | ed     |
+|                     | of     |
+|                     | genera |
+|                     | lized  |
+|                     | binomi |
+|                     | al     |
+|                     | coeffi |
+|                     | cients |
+|                     | used   |
+|                     | in the |
+|                     | GL     |
+|                     | algori |
+|                     | thm    |
++---------------------+--------+
+| RLcoeffs            | Calcul |
+|                     | ates   |
+|                     | the    |
+|                     | coeffi |
+|                     | cients |
+|                     | used   |
+|                     | in the |
+|                     | RLpoin |
+|                     | t      |
+|                     | and RL |
+|                     | algori |
+|                     | thms   |
++---------------------+--------+
+| RLmatrix            | Determ |
+|                     | ines   |
+|                     | the    |
+|                     | matrix |
+|                     | used   |
+|                     | in the |
+|                     | RL     |
+|                     | algori |
+|                     | thm    |
++---------------------+--------+
 
 Contribute
 ----------
 
-To contribute to this project, see the `contributing guidelines`_.
+To contribute to this project, see the `contributing
+guidelines <https://github.com/snimpids/differint/blob/master/CONTRIBUTING.md>`__.
 
 Credits
 -------
@@ -194,7 +369,4 @@ Academic Press Inc.
 License
 -------
 
-MIT © `Matthew Adams`_
-
-.. _contributing guidelines: https://github.com/snimpids/differint/blob/master/CONTRIBUTING.md
-.. _Matthew Adams: 2018
+MIT © `Matthew Adams <2018>`__
