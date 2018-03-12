@@ -15,7 +15,7 @@ def checkValues(alpha, domain_start, domain_end, num_points):
     assert type(domain_end) is type(0.0) \
         or type(domain_end) is type(0), "domain_end must be integer or float: %r" % domain_end
         
-    # Currently there is no support for complex orders (17 Jan 2017).
+    # Currently there is no support for complex orders (17 Jan 2018).
     assert type(alpha) is not type(1+1j), "alpha must be real: %r" % alpha
     
     return   
