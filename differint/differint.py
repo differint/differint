@@ -2,7 +2,10 @@ import numpy as np
 import math
 
 def isInteger(n):
-    assert (n >= 0 and (type(n) is type(0))), "n must be a positive integer or zero: %r" % n
+    if n >= 0 and (type(n) is type(0)):
+        return True
+    else:
+        return False
 
 def checkValues(alpha, domain_start, domain_end, num_points):
     """ Type checking for valid inputs. """
@@ -50,6 +53,78 @@ def poch(a,n):
         for j in range(n):
             poch *= (a + j)
         return poch
+    
+def Gamma(z):
+    """ Paul Godfrey's Gamma function valid for z complex. 
+        15 significant digits of accuracy for real z and 13
+        significant digits for other values.
+    """
+    
+    siz = np.size(z)
+    zz = z
+    f = np.zeros(2,)
+        
+    # Find negative real parts of z and make them positive.
+    if type(z) == 'complex':
+        Z = [z.real,z.imag]
+        if Z[0] < 0:
+            Z[0]  = -Z[0]
+            z = np.asarray(Z)
+            z = z.astype(complex)
+    
+    g = 607/128.
+    
+    c = [0.99999999999999709182,\
+          57.156235665862923517,\
+         -59.597960355475491248,\
+          14.136097974741747174,\
+        -0.49191381609762019978,\
+        .33994649984811888699e-4,\
+        .46523628927048575665e-4,\
+       -.98374475304879564677e-4,\
+        .15808870322491248884e-3,\
+       -.21026444172410488319e-3,\
+        .21743961811521264320e-3,\
+       -.16431810653676389022e-3,\
+        .84418223983852743293e-4,\
+       -.26190838401581408670e-4,\
+        .36899182659531622704e-5]
+    
+    if z == 0 or z == 1:
+        return 1.
+    
+    # Adjust for negative poles.
+    if (np.round(zz) == zz) and (zz.imag == 0) and (zz.real <= 0):
+        return np.inf
+        
+    z = z - 1
+    zh = z + 0.5
+    zgh = zh + g
+    
+    # Trick for avoiding floating-point overflow above z = 141.
+    zp = zgh**(zh*0.5)
+    ss = 0.
+    
+    for pp in range(len(c)-1,0,-1):
+        ss += c[pp]/(z+pp)
+        
+    sq2pi =  2.5066282746310005024157652848110;
+    f = (sq2pi*(c[0]+ss))*((zp*np.exp(-zgh))*zp)
+    
+    # Adjust for negative real parts.
+    #if zz.real < 0:
+    #    F = [f.real,f.imag]
+    #    F[0] = -np.pi/(zz.real*F[0]*np.sin(np.pi*zz.real))
+    #    f = np.asarray(F)
+    #    f = f.astype(complex)
+    
+    if type(zz) == 'complex':
+        return f.astype(complex)
+    elif isInteger(zz):
+        f = np.round(f)
+        return f.astype(int)
+    else:
+        return f
     
 def GLcoeffs(alpha,n):
     """ Computes the GL coefficient array of size n. 
