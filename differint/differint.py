@@ -127,6 +127,11 @@ def Gamma(z):
         return f.astype(int)
     else:
         return f
+
+def Beta(x,y):
+    """ Beta function using Godfrey's Gamma function. """
+    
+    return Gamma(x)*Gamma(y)/Gamma(x+y)
     
 def GLcoeffs(alpha,n):
     """ Computes the GL coefficient array of size n. 
