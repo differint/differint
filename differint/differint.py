@@ -55,7 +55,9 @@ def poch(a,n):
         return poch
     
 def Gamma(z):
-    """ Paul Godfrey's Gamma function valid for z complex. 
+    """ Paul Godfrey's Gamma function implementation valid for z complex.
+        This is converted from Godfrey's Gamma.m Matlab file available at
+        https://www.mathworks.com/matlabcentral/fileexchange/3572-gamma.
         15 significant digits of accuracy for real z and 13
         significant digits for other values.
     """
