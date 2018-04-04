@@ -37,8 +37,8 @@ class HelperTestCases(unittest.TestCase):
     """ Tests for helper functions. """
     
     def test_isInteger(self):
-        with self.assertRaises(AssertionError):
-            isInteger(1.1)
+        self.assertTrue(isInteger(1))
+        self.assertFalse(isInteger(1.1))
     
     def test_pochhammer(self):
         self.assertEqual(poch(poch_first_argument, poch_second_argument), poch_true_answer)
@@ -62,6 +62,17 @@ class HelperTestCases(unittest.TestCase):
             checkValues(0.1, 1j, 2, 100)
             checkValues(0.1, 1, 2j, 100)
             checkValues(1+1j, 1, 2, 100)
+            
+    """ Unit tests for gamma function. """
+    
+    def testFiveFactorial(self):
+        self.assertEqual(Gamma(6),120)
+        
+    def testNegativePoles(self):
+        self.assertEqual(Gamma(-2),np.inf)
+        
+    def testRealValue(self):
+        self.assertEqual(Gamma(1.25),0.9064024770554769)
         
 class TestInterpolantCoefficients(unittest.TestCase):
     """ Test the correctness of the interpolant coefficients. """
