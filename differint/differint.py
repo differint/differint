@@ -1,5 +1,4 @@
 import numpy as np
-import math
 
 def isInteger(n):
     if n >= 0 and (type(n) is type(0)):
@@ -289,6 +288,71 @@ def GLI(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 100):
         GLI[i] = sum(G*I)
         
     return GLI*step_size**-alpha
+
+def CRONE(alpha, f_name):
+    """Calculates the GL derivative approximation using the CRONE operator.
+    
+    
+    
+        see Mathieu, B., Melchior, P., Oustaloup, A., and Ceyral, Ch. (2003). Fractional
+            differentiation for edge detection. Signal Processing, 83, pp. 2421 -- 2432.
+    
+    """
+    class Error(Exception):
+        pass
+
+    class InputError(Error):
+        def __init__(self, expr, msg):
+            self.expr = expr
+            self.msg = msg
+
+    def CRONEfilter(siz, alpha):
+        """Creates CRONE convolution filter."""
+                
+        if (siz % 2) != 0:
+            w = siz
+            stop = int((siz-1)/2)
+            print(stop)
+        else:
+            w = siz + 1
+            stop = int(siz/2)
+            
+        D = GLcoeffs(alpha, stop)
+        D1 = D
+        D = np.flip(D, axis = 0)
+        
+        np.append(D,0)
+        np.append(D,-D1)
+        
+        return D
+    
+    if len(np.shape(f_name)) > 1:
+        [rows,cols] = np.shape(f_name)
+        imgx = np.zeros((rows,cols))
+        imgy = np.zeros((rows,cols))
+                
+        # Define the CRONE operators with the correct sizes.
+        CRONEx = CRONEfilter(cols, alpha) # cols is the width of the matrix
+        CRONEy = CRONEfilter(rows, alpha) # rows is the height of the matrix
+        
+        for i in range(rows):
+            imgx[i,:] = np.convolve(f_name[i,:], CRONEx, mode = 'same')
+            
+        for j in range(cols):
+            imgy[:,j] = np.convolve(f_name[:,j], CRONEy, mode = 'same')
+            
+        return imgx, imgy
+    
+    elif len(np.shape(f_name) == 1):
+        w = len(f_name)
+        CRONEx = CRONEfilter(w, alpha) # w is the length of the array
+        
+        imgx = np.convolve(f_name, CRONEx, mode = 'same')
+        
+        return imgx
+    
+    else:
+        raise InputError(f_name, 'f_name must have dimension <= 2')
 
 def RLcoeffs(index_k, index_j, alpha):
     """Calculates coefficients for the RL differintegral operator.
