@@ -335,7 +335,7 @@ def RLpoint(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 10
     checkValues(alpha, domain_start, domain_end, num_points)
     f_values, step_size = functionCheck(f_name, domain_start, domain_end, num_points)
     
-    C = 1/math.gamma(2-alpha)
+    C = 1/Gamma(2-alpha)
     
     RL = 0
     for index_j in range(num_points):
@@ -355,7 +355,7 @@ def RLmatrix(alpha, N):
     
     # Place 1 on the main diagonal.
     np.fill_diagonal(coeffMatrix,1)
-    return coeffMatrix/math.gamma(2-alpha)
+    return coeffMatrix/Gamma(2-alpha)
 
 def RL(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 100):
     """ Calculate the RL algorithm using a trapezoid rule over 
