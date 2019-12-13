@@ -1,0 +1,43 @@
+# differint changelog
+
+## 0.1
+
+2017-11-22
+
+### Added
+
+  - 'GL' - calculate GL differintegral
+
+## 0.2
+
+2017-11-24
+
+### Added
+
+  - 'RLtrap' - calculate RL differintegral using trapezoid rule
+  - 'RLcoeff' - calculate coefficients for use in 'RLtrap'
+  - 'checkvalues' - check for valid inputs for algorithms
+
+### Modified
+
+  - 'GL' - now works with 'checkvalues' to validate inputs
+  
+2018-01-29
+
+### Added
+  
+  - 'GLI' - calculate improved GL differintegral
+  - Unit tests for all core and auxiliary functions
+  - 'GLIinterpolat' calculate interpolation coefficients for GLI algorithm
+  - 'isInteger' for integer typechecking
+  - 'functionCheck' for checking function input
+  - 'test_func' for unittesting
+  - 'RL' for calculating RL algorithm over array of function values
+  - 'GL' for calculating GL algorithm over array of function values
+
+### Modified
+
+  - 'GL' now uses DFT for faster computation
+  - 'GL' changed to 'GLpoint'
+  - 'RLtrap' now called 'RLpoint'
+  

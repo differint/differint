@@ -1,1 +1,1 @@
-import .differint
+__all__ = ['differint', 'tests']
