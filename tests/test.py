@@ -86,6 +86,9 @@ class HelperTestCases(unittest.TestCase):
         
     def testRealValue(self):
         self.assertEqual(Gamma(1.25),0.9064024770554769)
+
+    def testComplexValue(self):
+        self.assertEqual(np.round(Gamma(1j), 4), -0.1549-0.498j)
         
 class TestInterpolantCoefficients(unittest.TestCase):
     """ Test the correctness of the interpolant coefficients. """
