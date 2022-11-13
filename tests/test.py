@@ -2,7 +2,7 @@ import unittest
 import numpy as np
 
 # Import from sibling directory.
-from ..differint.differint import *
+from differint.differint import *
 
 # Define constants to be used in tests.
 poch_first_argument = 1
@@ -38,7 +38,16 @@ class HelperTestCases(unittest.TestCase):
     
     def test_isInteger(self):
         self.assertTrue(isInteger(1))
+        self.assertTrue(isInteger(1.0))
+        self.assertTrue(isInteger(1+0j))
         self.assertFalse(isInteger(1.1))
+        self.assertFalse(isInteger(1.1+0j))
+        self.assertFalse(isInteger(1+1j))
+
+    def test_isPositiveInteger(self):
+        self.assertTrue(isPositiveInteger(1))
+        self.assertFalse(isPositiveInteger(1.1))
+        self.assertFalse(isPositiveInteger(-1))
     
     def test_pochhammer(self):
         self.assertEqual(poch(poch_first_argument, poch_second_argument), poch_true_answer)
