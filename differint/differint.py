@@ -3,10 +3,15 @@ from __future__ import print_function
 import numpy as np
 
 def isInteger(n):
-    if n >= 0 and (type(n) is type(0)):
+    if n.imag:
+        return False
+    if float(n.real).is_integer():
         return True
     else:
         return False
+
+def isPositiveInteger(n):
+    return isInteger(n) and n > 0
 
 def checkValues(alpha, domain_start, domain_end, num_points):
     """ Type checking for valid inputs. """
@@ -44,7 +49,7 @@ def poch(a,n):
     
     # First, check if 'a' is a real number (this is currently only working for reals).
     assert type(a) is not type(1+1j), "a must be real: %r" % a
-    isInteger(n)
+    isPositiveInteger(n)
     
     # Compute the Pochhammer symbol.
     if n == 0:
@@ -123,7 +128,7 @@ def Gamma(z):
     
     if type(zz) == 'complex':
         return f.astype(complex)
-    elif isInteger(zz):
+    elif isPositiveInteger(zz):
         f = np.round(f)
         return f.astype(int)
     else:
@@ -142,7 +147,7 @@ def GLcoeffs(alpha,n):
     """ 
     
     # Validate input.
-    isInteger(n)
+    isPositiveInteger(n)
     
     # Get generalized binomial coefficients.
     GL_filter = np.zeros(n+1,)
