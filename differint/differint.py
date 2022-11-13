@@ -50,6 +50,7 @@ def poch(a,n):
     """
     if isPositiveInteger(n):
         # Compute the Pochhammer symbol.
+        n = int(n)
         if n == 0:
             return 1.0
         else:
