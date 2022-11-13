@@ -45,20 +45,25 @@ def functionCheck(f_name, domain_start, domain_end, num_points):
     return f_values, step_size
 
 def poch(a,n):
-    """ Returns the Pochhammer symbol (a)_n. """
-    
-    # First, check if 'a' is a real number (this is currently only working for reals).
-    assert type(a) is not type(1+1j), "a must be real: %r" % a
-    isPositiveInteger(n)
-    
-    # Compute the Pochhammer symbol.
-    if n == 0:
-        return 1.0
-    else:
-        poch = 1
-        for j in range(n):
-            poch *= (a + j)
-        return poch
+    """ Returns the Pochhammer symbol (a)_n. a can be any complex or real number 
+        except the negative integers and 0. n can be any nonnegative real.
+    """
+    if isPositiveInteger(n):
+        # Compute the Pochhammer symbol.
+        if n == 0:
+            return 1.0
+        else:
+            poch = 1
+            for j in range(n):
+                poch *= (a + j)
+            return poch
+
+    # if a and a + n are both nonpositive integers, we can use another formula...
+    # see here https://www.mathworks.com/help/symbolic/sym.pochhammer.html
+    if isPositiveInteger(-1 * a) and isPositiveInteger(-1 * a - n):
+        sign = -1 if np.abs(n % 2) == 1 else 1
+        return sign * Gamma(1 - a) / Gamma(1 - a - n)
+    return Gamma(a + n) / Gamma(a)
     
 def Gamma(z):
     """ Paul Godfrey's Gamma function implementation valid for z complex.
