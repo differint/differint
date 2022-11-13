@@ -3,7 +3,9 @@ from __future__ import print_function
 import numpy as np
 
 def isInteger(n):
-    if n >= 0 and (type(n) is type(0)):
+    if n.imag:
+        return False
+    if float(n.real).is_integer():
         return True
     else:
         return False
