@@ -529,3 +529,38 @@ def CaputoL1point(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
     L1 = 1 / Gamma(2 - alpha) * np.sum(np.multiply(coefficients * step_size**(-alpha), f_differences))
     
     return L1
+
+def CaputoL2Cpoint(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
+    if alpha <= 0 or alpha >= 1:
+        raise ValueError('Alpha must be in (0, 1) for this method.')
+
+    # Flip the domain limits if they are in the wrong order.
+    if domain_start > domain_end:
+        domain_start, domain_end = domain_end, domain_start
+    
+    # Check inputs.
+    checkValues(alpha, domain_start, domain_end, num_points)
+    f_values, step_size = functionCheck(f_name, domain_start, domain_end, num_points)
+
+    def a_coes(l, alpha):
+        sigma = 1-alpha/2
+        if l == 0:
+            return sigma**(1-alpha)
+        return (l + sigma)**(1-alpha) - (l-1+sigma)**(1-alpha)
+    def b_coes(l, alpha):
+        sigma = 1-alpha/2
+        return (1/(2-alpha))*((l+sigma)**(2-alpha) - (l-1+sigma)**(2-alpha)) - \
+                0.5 * ((l + sigma)**(1-alpha) + (l-1+sigma)**(1-alpha))
+    def c_coes(k, alpha, n):
+        if k == 0:
+            return a_coes(0, alpha) + b_coes(1, alpha)
+        elif 1 <= k and k <= n-2:
+            return a_coes(k, alpha) + b_coes(k+1, alpha) - b_coes(k, alpha)
+        elif k == n-1:
+            return a_coes(k, alpha) - b_coes(k, alpha)
+    L2C = 0
+    for k in range(0, num_points - 2):
+        L2C += c_coes(k, alpha, num_points-1) * (f_values[num_points - k - 1]-f_values[num_points - k - 2])
+    L2C *= (step_size**(-alpha)) / Gamma(2-alpha)
+
+    return L2C
