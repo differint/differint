@@ -483,3 +483,49 @@ class GLIinterpolat:
         self.nxt = alpha*(2+alpha)/8
         self.crr = (4-alpha*alpha)/4
         self.prv = alpha*(alpha-2)/8
+
+def CaputoL1point(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
+    ''' Calculate the Caputo derivative of a function at a point using the L1 method.
+
+    see Karniadakis, G.E.. (2019). Handbook of Fractional Calculus with Applications
+    Volume 3: Numerical Methods. De Gruyter.
+
+    Parameters
+    ==========
+        alpha : float
+            The order of the differintegral to be computed.
+        f_name : function handle, lambda function, list, or 1d-array of 
+                 function values
+            This is the function that is to be differintegrated.
+        domain_start : float
+            The left-endpoint of the function domain. Default value is 0.
+        domain_end : float
+            The right-endpoint of the function domain; the point at which the 
+            differintegral is being evaluated. Default value is 1.
+        num_points : integer
+            The number of points in the domain. Default value is 100.
+    Output
+    ======
+        L1 : float
+            The Caputo L1 integral evaluated at the corresponding point.
+    '''
+
+    if alpha <= 0 or alpha >= 1:
+        raise ValueError('Alpha must be in (0, 1) for this method.')
+
+    # Flip the domain limits if they are in the wrong order.
+    if domain_start > domain_end:
+        domain_start, domain_end = domain_end, domain_start
+    
+    # Check inputs.
+    checkValues(alpha, domain_start, domain_end, num_points)
+    f_values, step_size = functionCheck(f_name, domain_start, domain_end, num_points)
+
+    f_values = np.array(f_values)
+    j_values = np.arange(0, num_points-1)
+    coefficients = (j_values + 1) ** (1 - alpha) - (j_values) ** (1 - alpha)
+    f_differences = f_values[1:] - f_values[:-1]
+    f_differences = f_differences[::-1]
+    L1 = 1 / Gamma(2 - alpha) * np.sum(np.multiply(coefficients * step_size**(-alpha), f_differences))
+    
+    return L1
