@@ -12,6 +12,7 @@ size_coefficient_array = 20
 test_N = 512
 sqrtpi2 = 0.88622692545275794
 truevaluepoly = 0.94031597258
+truevaluepoly_caputo = 1.50450555 # 8 / (3 * np.sqrt(np.pi))
 
 INTER = GLIinterpolat(1)
 
@@ -124,6 +125,12 @@ class TestAlgorithms(unittest.TestCase):
         
     def test_RL_accuracy_sqrt(self):
         self.assertTrue(abs(RL_result - sqrtpi2) <= 1e-4)
+
+    def test_CaputoL1point_accuracy_sqrt(self):
+        self.assertTrue(abs(CaputoL1point(0.5, lambda x: x**0.5, 0, 1., 1024)-sqrtpi2) <= 1e-2)
+
+    def test_CaputoL1point_accuracy_polynomial(self):
+        self.assertTrue(abs(CaputoL1point(0.5, lambda x: x**2-1, 0, 1., 1024)-truevaluepoly_caputo) <= 1e-2)
         
 if __name__ == '__main__':
     unittest.main(argv=['first-arg-is-ignored'], exit=False)
