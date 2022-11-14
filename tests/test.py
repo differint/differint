@@ -130,7 +130,7 @@ class TestAlgorithms(unittest.TestCase):
         self.assertTrue(abs(CaputoL1point(0.5, lambda x: x**0.5, 0, 1., 1024)-sqrtpi2) <= 1e-2)
 
     def test_CaputoL1point_accuracy_polynomial(self):
-        self.assertTrue(abs(CaputoL1point(0.5, lambda x: x**2-1, 0, 1., 1024)-truevaluepoly_caputo) <= 1e-2)
+        self.assertTrue(abs(CaputoL1point(0.5, lambda x: x**2-1, 0, 1., 1024)-truevaluepoly_caputo) <= 1e-3)
         
 if __name__ == '__main__':
     unittest.main(argv=['first-arg-is-ignored'], exit=False)
