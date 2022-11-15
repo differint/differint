@@ -51,6 +51,10 @@ class HelperTestCases(unittest.TestCase):
     
     def test_pochhammer(self):
         self.assertEqual(poch(poch_first_argument, poch_second_argument), poch_true_answer)
+        self.assertEqual(poch(-1, 3), 0)
+        self.assertEqual(poch(-1.5, 0.5), np.inf)
+        self.assertEqual(np.round(poch(1j, 1), 3), 0.000+1.000j)
+        self.assertEqual(poch(-10, 2), 90)
         
     def test_functionCheck(self):
         self.assertEqual(len(checked_function1), test_N)
@@ -82,6 +86,9 @@ class HelperTestCases(unittest.TestCase):
         
     def testRealValue(self):
         self.assertEqual(Gamma(1.25),0.9064024770554769)
+
+    def testComplexValue(self):
+        self.assertEqual(np.round(Gamma(1j), 4), -0.1549-0.498j)
         
 class TestInterpolantCoefficients(unittest.TestCase):
     """ Test the correctness of the interpolant coefficients. """
