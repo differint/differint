@@ -350,7 +350,7 @@ def CRONE(alpha, f_name):
             
         return imgx, imgy
     
-    elif len(np.shape(f_name) == 1):
+    elif len(np.shape(f_name)) == 1:
         w = len(f_name)
         CRONEx = CRONEfilter(w, alpha) # w is the length of the array
         
