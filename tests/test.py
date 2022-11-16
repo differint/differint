@@ -12,6 +12,7 @@ size_coefficient_array = 20
 test_N = 512
 sqrtpi2 = 0.88622692545275794
 truevaluepoly = 0.94031597258
+PC_x_power = np.linspace(0, 1, 100) ** 5.5
 
 INTER = GLIinterpolat(1)
 
@@ -32,6 +33,9 @@ GLI_length = len(GLI_r)
 RL_r = RL(0.5, lambda x: np.sqrt(x), 0, 1, test_N)
 RL_result = RL_r[-1]
 RL_length = len(RL_r)
+
+# Get FODE function for solving.
+PC_func = lambda x, y : 1/24 * Gamma(5 + 1.5) * x**4 + x**(8 + 2 * 1.5) - y**2
 
 class HelperTestCases(unittest.TestCase):
     """ Tests for helper functions. """
@@ -131,7 +135,12 @@ class TestAlgorithms(unittest.TestCase):
         
     def test_RL_accuracy_sqrt(self):
         self.assertTrue(abs(RL_result - sqrtpi2) <= 1e-4)
-        
+
+class TestSolvers(unittest.TestCase):
+    """ Tests for the correct solution to the equations. """
+    def test_PC_solution_three_halves(self):
+        self.assertTrue((abs(PCsolver([0], 1.5, PC_func, 0, 1, 100)-PC_x_power) <= 1e-2).all())
+
 if __name__ == '__main__':
     unittest.main(argv=['first-arg-is-ignored'], exit=False)
     
