@@ -93,6 +93,23 @@ class HelperTestCases(unittest.TestCase):
 
     def testComplexValue(self):
         self.assertEqual(np.round(Gamma(1j), 4), -0.1549-0.498j)
+
+    """ Unit tests for Mittag-Leffler function. """
+
+    def test_ML_cosh_root(self):
+        xs = np.arange(10, 0.1)
+        self.assertTrue((np.abs(MittagLeffler(2, 1, xs, ignore_special_cases=True)\
+                                        - np.cosh(np.sqrt(xs))) <= 1e-3).all())
+
+    def test_ML_exp(self):
+        xs = np.arange(10, 0.1)
+        self.assertTrue((np.abs(MittagLeffler(1, 1, xs, ignore_special_cases=True)\
+                                        - np.exp(xs)) <= 1e-3).all())
+
+    def test_ML_geometric(self):
+        xs = np.arange(1, 0.05)
+        self.assertTrue((np.abs(MittagLeffler(0, 1, xs, ignore_special_cases=True)\
+                                        - 1 / (1 - xs)) <= 1e-3).all())
         
 class TestInterpolantCoefficients(unittest.TestCase):
     """ Test the correctness of the interpolant coefficients. """
