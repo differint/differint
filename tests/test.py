@@ -164,6 +164,10 @@ class TestSolvers(unittest.TestCase):
         ML_alpha = MittagLeffler(5.5, 1, xs)
         self.assertTrue((np.abs(PCsolver([1, 0, 0, 0, 0, 0], 5.5, lambda x,y : y)-ML_alpha) <= 1e-2).all())
 
+    def test_PC_solution_linear(self):
+        xs = np.linspace(0, 1, 100)
+        self.assertTrue((np.abs(PCsolver([1, 0], 1.5, lambda x,y : y-x-1)-(xs+1)) <= 1e-2).all())
+
 if __name__ == '__main__':
     unittest.main(argv=['first-arg-is-ignored'], exit=False)
     
