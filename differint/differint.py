@@ -489,3 +489,73 @@ class GLIinterpolat:
         self.nxt = alpha*(2+alpha)/8
         self.crr = (4-alpha*alpha)/4
         self.prv = alpha*(alpha-2)/8
+
+def PCcoeffs(alpha, j, n):
+    if 1 < alpha and alpha < 2:
+        if j == 0:
+            return (n+1)**alpha * (alpha - n) + n**alpha * (2 * n - alpha - 1) - (n - 1)**(alpha + 1)
+        elif j == n:
+            return 2 ** (alpha + 1) - alpha - 3
+        return (n - j + 2) ** (alpha + 1) + 3 * (n - j) ** (alpha + 1) - 3 * (n - j + 1) ** (alpha + 1) - (n - j - 1) ** (alpha + 1)
+
+def PCsolver(initial_values, alpha, f_name, domain_start=0, domain_end=1, num_points=100):
+    """ Solve an equation of the form D[y(x)]=f(x, y(x)) using the predictor-corrector
+        method, modified to be compatible with fractional derivatives.
+
+    see Deng, W. (2007) Short memory principle and a predictor–corrector approach for 
+    fractional differential equations. Journal of Computational and Applied Mathematics.
+        
+    Parameters
+    ==========
+        initial_values : float 1d-array
+            A list of initial values for the IVP. There should be as many IVs
+            as floor(alpha).
+        alpha : float
+            The order of the differintegral in the equation to be computed.
+        f_name : function handle, lambda function, list, or 1d-array of 
+                 function values
+            This is the function on the right side of the equation, and should
+            accept two variables; first the independant variable, and second
+            the equation to be solved.
+        domain_start : float
+            The left-endpoint of the function domain. Default value is 0.
+        domain_end : float
+            The right-endpoint of the function domain; the point at which the 
+            differintegral is being evaluated. Default value is 1.
+        num_points : integer
+            The number of points in the domain. Default value is 100.
+            
+    Output
+    ======
+        y_correction : float 1d-array
+            The calculated solution to the IVP at each of the points 
+            between the left and right endpoint.
+    """
+    x_points = np.linspace(domain_start, domain_end, num_points)
+    step_size = x_points[1] - x_points[0]
+    if 1 < alpha and alpha < 2:
+        y_prediction = np.zeros(num_points)
+        y_prediction[0] = initial_values[0]            
+        y_correction = np.zeros(num_points)
+        y_correction[0] = initial_values[0]
+        
+        for x_index in range(num_points - 1):
+            y_prediction[x_index + 1] += initial_values[0] * step_size
+            y_prediction[x_index + 1] += y_correction[x_index]
+            y_prediction[x_index + 1] += step_size ** alpha / Gamma(alpha + 1) * f_name(x_points[x_index], y_correction[x_index])
+            subsum = 0
+            for j in range(x_index + 1):
+                subsum += PCcoeffs(alpha, j, x_index) * f_name(x_points[j], y_correction[j])
+            y_prediction[x_index + 1] += step_size ** alpha / Gamma(alpha + 2) * subsum
+
+            y_correction[x_index + 1] += initial_values[0] * step_size
+            y_correction[x_index + 1] += y_correction[x_index]
+            y_correction[x_index + 1] += step_size ** alpha / Gamma(alpha + 2) * alpha * f_name(x_points[x_index], y_correction[x_index])
+            y_correction[x_index + 1] += step_size ** alpha / Gamma(alpha + 2) * f_name(x_points[x_index + 1], y_prediction[x_index + 1])
+            y_correction[x_index + 1] += step_size ** alpha / Gamma(alpha + 2) * subsum
+        y_prediction = y_correction
+    elif 2 < alpha:
+        raise ValueError('Not yet supported!')
+    elif alpha < 1:
+        raise ValueError('Not yet supoprted!')
+    return y_correction
