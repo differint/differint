@@ -78,7 +78,7 @@ GLI | Computes the improved GL differintegral over an entire array of function v
 RLpoint | Computes the RL differintegral at a point
 RL | Computes the RL differintegral over an entire array of function values using matrix methods
 CaputoL1point | Computes the Caputo differintegral at a point using the L1 algorithm
-CaputoL2point | Computes the Caputo differintegral at a point using the L2C algorithm
+CaputoL2Cpoint | Computes the Caputo differintegral at a point using the L2C algorithm
 PCsolver | Solves IVPs for fractional ODEs of the form ${}^CD^\alpha[y(x)]=f(x,y(x))$ using the predictor-corrector method
 
 
