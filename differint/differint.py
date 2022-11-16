@@ -145,6 +145,49 @@ def Beta(x,y):
     
     return Gamma(x)*Gamma(y)/Gamma(x+y)
     
+def MittagLeffler(a, b, x, num_terms=50, *, ignore_special_cases=False):
+    ''' Calculate the Mittag-Leffler function by checking for special cases, and trying to 
+        reduce the parameters. If neither of those work, it just brute forces it.
+        
+        Parameters
+       ==========
+        a : float
+            The first parameter of the Mittag-Leffler function.
+        b : float
+            The second parameter of the Mittag-Leffler function
+        x : float or 1D-array of floats
+            The value or values to be evaluated at.
+        num_terms : int
+            The number of terms to calculate in the sum. Ignored if 
+            a special case can be used instead. Default value is 100.
+        ignore_special_cases : bool
+            Don't use the special cases, use the series definition.
+            Probably only useful for testing. Default value is False.
+    '''
+    # check for quick special cases
+    if not ignore_special_cases:
+        if a == 0:
+            if (np.abs(x) < 1).all():
+                return 1 / Gamma(b) * 1 / (1 - x)
+            return x * np.inf
+        elif a == 0.5 and b == 1:
+            # requires calculation of the complementary error function
+            pass
+        elif a == 1 and b == 1:
+            return np.exp(x)
+        elif a == 2 and b == 1:
+            return np.cosh(np.sqrt(x))
+        elif a == 1 and b == 2:
+            return (np.exp(x) - 1) / x
+        elif a == 2 and b == 2:
+            return np.sinh(np.sqrt(x)) / np.sqrt(x)
+    # manually calculate with series definition
+    exponents = np.arange(num_terms)
+    exp_vals = np.array([x]).T ** exponents
+    gamma_vals = np.array([Gamma(exponent * a + b) for exponent in exponents])
+    return np.sum(exp_vals / gamma_vals, axis=1)
+
+
 def GLcoeffs(alpha,n):
     """ Computes the GL coefficient array of size n. 
     
