@@ -595,7 +595,7 @@ def PCsolver(initial_values, alpha, f_name, domain_start=0, domain_end=1, num_po
             initial_value_contribution = initial_values[0] * step_size
         elif 2 < alpha:
             for k in range(len(initial_values)):
-                initial_value_contribution += initial_values[i] / Gamma(i + 1) * (x_points[x_index + 1] ** (k + 1) - x_points[x_index] ** (k + 1)) 
+                initial_value_contribution += initial_values[k] / Gamma(k + 1) * (x_points[x_index + 1] ** (k + 1) - x_points[x_index] ** (k + 1)) 
         elif alpha < 1:
             raise ValueError('Not yet supoprted!')
         y_prediction[x_index + 1] += y_correction[x_index]
