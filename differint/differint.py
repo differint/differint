@@ -560,7 +560,7 @@ def PCsolver(initial_values, alpha, f_name, domain_start=0, domain_end=1, num_po
     ==========
         initial_values : float 1d-array
             A list of initial values for the IVP. There should be as many IVs
-            as floor(alpha).
+            as ceil(alpha).
         alpha : float
             The order of the differintegral in the equation to be computed.
         f_name : function handle, lambda function, list, or 1d-array of 
@@ -592,10 +592,10 @@ def PCsolver(initial_values, alpha, f_name, domain_start=0, domain_end=1, num_po
     for x_index in range(num_points - 1):
         initial_value_contribution = 0
         if 1 < alpha and alpha < 2:
-            initial_value_contribution = initial_values[0] * step_size
+            initial_value_contribution = initial_values[1] * step_size
         elif 2 < alpha:
-            for k in range(len(initial_values)):
-                initial_value_contribution += initial_values[k] / Gamma(k + 1) * (x_points[x_index + 1] ** (k + 1) - x_points[x_index] ** (k + 1)) 
+            for k in range(1, int(np.ceil(alpha)) - 1):
+                initial_value_contribution += initial_values[k] / np.math.factorial(k) * (x_points[x_index + 1] ** k - x_points[x_index] ** k) 
         elif alpha < 1:
             raise ValueError('Not yet supoprted!')
         y_prediction[x_index + 1] += y_correction[x_index]
