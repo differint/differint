@@ -503,7 +503,15 @@ def PCsolver(initial_values, alpha, f_name, domain_start=0, domain_end=1, num_po
         method, modified to be compatible with fractional derivatives.
 
     see Deng, W. (2007) Short memory principle and a predictor–corrector approach for 
-    fractional differential equations. Journal of Computational and Applied Mathematics.
+        fractional differential equations. Journal of Computational and Applied 
+        Mathematics.
+
+    test examples from
+        Baskonus, H.M., Bulut, H. (2015) On the numerical solutions of some fractional
+        ordinary differential equations by fractional Adams-Bashforth-Moulton method.
+        De Gruyter.
+
+
         
     Parameters
     ==========
