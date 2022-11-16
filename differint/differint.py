@@ -585,7 +585,7 @@ def PCsolver(initial_values, alpha, f_name, domain_start=0, domain_end=1, num_po
 
     Examples:
         >>> f_name = lambda x, y : y - x - 1
-        >>> initial_values = [1, 0]
+        >>> initial_values = [1, 1]
         >>> y_solved = PCsolver(initial_values, 1.5, f_name)
         >>> theoretical = np.linspace(0, 1, 100) + 1
         >>> np.allclose(y_solved, theoretical)
