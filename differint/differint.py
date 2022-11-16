@@ -586,8 +586,8 @@ def PCsolver(initial_values, alpha, f_name, domain_start=0, domain_end=1, num_po
     """
     x_points = np.linspace(domain_start, domain_end, num_points)
     step_size = x_points[1] - x_points[0]
-    y_correction = np.zeros(num_points)
-    y_prediction = np.zeros(num_points)
+    y_correction = np.zeros(num_points, dtype='complex_')
+    y_prediction = np.zeros(num_points, dtype='complex_')
     
     y_prediction[0] = initial_values[0]            
     y_correction[0] = initial_values[0]
