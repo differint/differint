@@ -35,7 +35,8 @@ RL_result = RL_r[-1]
 RL_length = len(RL_r)
 
 # Get FODE function for solving.
-PC_func = lambda x, y : 1/24 * Gamma(5 + 1.5) * x**4 + x**(8 + 2 * 1.5) - y**2
+PC_func_power = lambda x, y : 1/24 * Gamma(5 + 1.5) * x**4 + x**(8 + 2 * 1.5) - y**2
+PC_func_ML = lambda x,y : y
 
 class HelperTestCases(unittest.TestCase):
     """ Tests for helper functions. """
@@ -157,6 +158,11 @@ class TestSolvers(unittest.TestCase):
     """ Tests for the correct solution to the equations. """
     def test_PC_solution_three_halves(self):
         self.assertTrue((np.abs(PCsolver([0, 0], 1.5, PC_func_power, 0, 1, 100)-PC_x_power) <= 1e-2).all())
+
+    def test_PC_solution_ML(self):
+        xs = np.linspace(0, 1, 100)
+        ML_alpha = MittagLeffler(5.5, 1, xs)
+        self.assertTrue((np.abs(PCsolver([1, 0, 0, 0, 0, 0], 5.5, lambda x,y : y)-ML_alpha) <= 1e-2).all())
 
 if __name__ == '__main__':
     unittest.main(argv=['first-arg-is-ignored'], exit=False)
