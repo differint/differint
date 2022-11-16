@@ -156,7 +156,7 @@ class TestAlgorithms(unittest.TestCase):
 class TestSolvers(unittest.TestCase):
     """ Tests for the correct solution to the equations. """
     def test_PC_solution_three_halves(self):
-        self.assertTrue((abs(PCsolver([0], 1.5, PC_func, 0, 1, 100)-PC_x_power) <= 1e-2).all())
+        self.assertTrue((np.abs(PCsolver([0, 0], 1.5, PC_func_power, 0, 1, 100)-PC_x_power) <= 1e-2).all())
 
 if __name__ == '__main__':
     unittest.main(argv=['first-arg-is-ignored'], exit=False)
