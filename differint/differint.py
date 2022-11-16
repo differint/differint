@@ -603,7 +603,7 @@ def PCsolver(initial_values, alpha, f_name, domain_start=0, domain_end=1, num_po
         if 1 < alpha and alpha < 2:
             initial_value_contribution = initial_values[1] * step_size
         elif 2 < alpha:
-            for k in range(1, int(np.ceil(alpha)) - 1):
+            for k in range(1, int(np.ceil(alpha))):
                 initial_value_contribution += initial_values[k] / np.math.factorial(k) * (x_points[x_index + 1] ** k - x_points[x_index] ** k) 
         elif alpha < 1:
             raise ValueError('Not yet supported!')
