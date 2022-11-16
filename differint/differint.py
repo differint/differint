@@ -599,6 +599,7 @@ def PCsolver(initial_values, alpha, f_name, domain_start=0, domain_end=1, num_po
                 initial_value_contribution += initial_values[k] / np.math.factorial(k) * (x_points[x_index + 1] ** k - x_points[x_index] ** k) 
         elif alpha < 1:
             raise ValueError('Not yet supported!')
+        y_prediction[x_index + 1] += initial_value_contribution
         y_prediction[x_index + 1] += y_correction[x_index]
         y_prediction[x_index + 1] += step_size ** alpha / Gamma(alpha + 1) * f_name(x_points[x_index], y_correction[x_index])
         subsum = 0
@@ -611,6 +612,5 @@ def PCsolver(initial_values, alpha, f_name, domain_start=0, domain_end=1, num_po
         y_correction[x_index + 1] += step_size ** alpha / Gamma(alpha + 2) * alpha * f_name(x_points[x_index], y_correction[x_index])
         y_correction[x_index + 1] += step_size ** alpha / Gamma(alpha + 2) * f_name(x_points[x_index + 1], y_prediction[x_index + 1])
         y_correction[x_index + 1] += step_size ** alpha / Gamma(alpha + 2) * subsum
-    y_prediction = y_correction
     
     return y_correction
