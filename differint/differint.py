@@ -565,8 +565,7 @@ def PCsolver(initial_values, alpha, f_name, domain_start=0, domain_end=1, num_po
             as ceil(alpha).
         alpha : float
             The order of the differintegral in the equation to be computed.
-        f_name : function handle, lambda function, list, or 1d-array of 
-                 function values
+        f_name : function handle or lambda function
             This is the function on the right side of the equation, and should
             accept two variables; first the independant variable, and second
             the equation to be solved.
