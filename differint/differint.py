@@ -553,6 +553,8 @@ def PCsolver(initial_values, alpha, f_name, domain_start=0, domain_end=1, num_po
         Baskonus, H.M., Bulut, H. (2015) On the numerical solutions of some fractional
         ordinary differential equations by fractional Adams-Bashforth-Moulton method.
         De Gruyter.
+        Weilbeer, M. (2005) Efficient Numerical Methods for Fractional Differential
+        Equations and their Analytical Background. 
 
 
         
