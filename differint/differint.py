@@ -582,6 +582,14 @@ def PCsolver(initial_values, alpha, f_name, domain_start=0, domain_end=1, num_po
         y_correction : float 1d-array
             The calculated solution to the IVP at each of the points 
             between the left and right endpoint.
+
+    Examples:
+        >>> f_name = lambda x, y : y - x - 1
+        >>> initial_values = [1, 0]
+        >>> y_solved = PCsolver(initial_values, 1.5, f_name)
+        >>> theoretical = np.linspace(0, 1, 100) + 1
+        >>> np.allclose(y_solved, theoretical)
+        True
     """
     x_points = np.linspace(domain_start, domain_end, num_points)
     step_size = x_points[1] - x_points[0]
