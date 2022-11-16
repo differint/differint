@@ -531,6 +531,30 @@ def CaputoL1point(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
     return L1
 
 def CaputoL2Cpoint(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
+    ''' Calculate the Caputo derivative of a function at a point using the L2C method.
+
+    see Karniadakis, G.E.. (2019). Handbook of Fractional Calculus with Applications
+    Volume 3: Numerical Methods. De Gruyter.
+
+    Parameters
+    ==========
+        alpha : float
+            The order of the differintegral to be computed.
+        f_name : function handle, lambda function, list, or 1d-array of 
+                 function values
+            This is the function that is to be differintegrated.
+        domain_start : float
+            The left-endpoint of the function domain. Default value is 0.
+        domain_end : float
+            The right-endpoint of the function domain; the point at which the 
+            differintegral is being evaluated. Default value is 1.
+        num_points : integer
+            The number of points in the domain. Default value is 100.
+    Output
+    ======
+        L2C : float
+            The Caputo L2C integral evaluated at the corresponding point.
+    '''
     if alpha <= 0 or alpha >= 1:
         raise ValueError('Alpha must be in (0, 1) for this method.')
 
