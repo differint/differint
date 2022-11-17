@@ -493,7 +493,7 @@ def CaputoL1point(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
     Parameters
     ==========
         alpha : float
-            The order of the differintegral to be computed.
+            The order of the differintegral to be computed. Must be in (0, 1)
         f_name : function handle, lambda function, list, or 1d-array of 
                  function values
             This is the function that is to be differintegrated.
@@ -532,6 +532,9 @@ def CaputoL1point(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
 
 def CaputoL2Cpoint(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
     ''' Calculate the Caputo derivative of a function at a point using the L2C method.
+        A note: this method requires evaluation of the points f(domain_end + step size)
+        and f(-step_size), and currently will only work if `f_name` is a callable 
+        function.
 
     see Karniadakis, G.E.. (2019). Handbook of Fractional Calculus with Applications
     Volume 3: Numerical Methods. De Gruyter.
@@ -539,9 +542,8 @@ def CaputoL2Cpoint(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
     Parameters
     ==========
         alpha : float
-            The order of the differintegral to be computed.
-        f_name : function handle, lambda function, list, or 1d-array of 
-                 function values
+            The order of the differintegral to be computed. Must be in (0, 2).
+        f_name : function handle or lambda function
             This is the function that is to be differintegrated.
         domain_start : float
             The left-endpoint of the function domain. Default value is 0.
@@ -555,8 +557,8 @@ def CaputoL2Cpoint(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
         L2C : float
             The Caputo L2C integral evaluated at the corresponding point.
     '''
-    if alpha <= 0 or alpha >= 1:
-        raise ValueError('Alpha must be in (0, 1) for this method.')
+    if alpha <= 0 or alpha >= 2:
+        raise ValueError('Alpha must be in (0, 1) or (1, 2) for this method.')
 
     # Flip the domain limits if they are in the wrong order.
     if domain_start > domain_end:
