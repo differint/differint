@@ -530,6 +530,52 @@ def CaputoL1point(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
     
     return L1
 
+def CaputoL2point(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
+    ''' Calculate the Caputo derivative of a function at a point using the L2 method.
+        A note: this method requires evaluation of the point f(domain_end + step size),
+        and currently will only work if `f_name` is a callable function.
+
+    see Karniadakis, G.E.. (2019). Handbook of Fractional Calculus with Applications
+    Volume 3: Numerical Methods. De Gruyter.
+
+    Parameters
+    ==========
+        alpha : float
+            The order of the differintegral to be computed. Must be in (1, 2).
+        f_name : function handle or lambda function
+            This is the function that is to be differintegrated.
+        domain_start : float
+            The left-endpoint of the function domain. Default value is 0.
+        domain_end : float
+            The right-endpoint of the function domain; the point at which the 
+            differintegral is being evaluated. Default value is 1.
+        num_points : integer
+            The number of points in the domain. Default value is 100.
+    Output
+    ======
+        L2 : float
+            The Caputo L2 integral evaluated at the corresponding point.
+    '''
+    if alpha <= 1 or alpha >= 2:
+        raise ValueError('Alpha must be in (1, 2) for this method.')
+    # Flip the domain limits if they are in the wrong order.
+    if domain_start > domain_end:
+        domain_start, domain_end = domain_end, domain_start
+    
+    # Check inputs.
+    checkValues(alpha, domain_start, domain_end, num_points)
+    f_values, step_size = functionCheck(f_name, domain_start, domain_end, num_points)
+
+    def b_coes(alpha, j):
+        return (j + 1) ** (2 - alpha) - j ** (2 - alpha)
+
+    # start with the point outside of the domain
+    L2 = b_coes(alpha, 0) * (f_values[num_points - 2] + f_name(num_points * step_size) - 2 * f_values[num_points - 1]) #f_name(num_points * step_size)
+    for k in range(1, num_points - 2):
+        L2 += b_coes(alpha, k) * (f_values[num_points - 2 - k] + f_values[num_points - k] - 2 * f_values[num_points - k - 1])
+    return L2 * step_size ** (-1 * alpha) / Gamma(3 - alpha)
+
+
 def CaputoL2Cpoint(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
     ''' Calculate the Caputo derivative of a function at a point using the L2C method.
         A note: this method requires evaluation of the points f(domain_end + step size)
