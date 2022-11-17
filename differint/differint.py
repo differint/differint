@@ -614,25 +614,14 @@ def CaputoL2Cpoint(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
     checkValues(alpha, domain_start, domain_end, num_points)
     f_values, step_size = functionCheck(f_name, domain_start, domain_end, num_points)
 
-    def a_coes(l, alpha):
-        sigma = 1-alpha/2
-        if l == 0:
-            return sigma**(1-alpha)
-        return (l + sigma)**(1-alpha) - (l-1+sigma)**(1-alpha)
-    def b_coes(l, alpha):
-        sigma = 1-alpha/2
-        return (1/(2-alpha))*((l+sigma)**(2-alpha) - (l-1+sigma)**(2-alpha)) - \
-                0.5 * ((l + sigma)**(1-alpha) + (l-1+sigma)**(1-alpha))
-    def c_coes(k, alpha, n):
-        if k == 0:
-            return a_coes(0, alpha) + b_coes(1, alpha)
-        elif 1 <= k and k <= n-2:
-            return a_coes(k, alpha) + b_coes(k+1, alpha) - b_coes(k, alpha)
-        elif k == n-1:
-            return a_coes(k, alpha) - b_coes(k, alpha)
-    L2C = 0
-    for k in range(0, num_points - 2):
-        L2C += c_coes(k, alpha, num_points-1) * (f_values[num_points - k - 1]-f_values[num_points - k - 2])
-    L2C *= (step_size**(-alpha)) / Gamma(2-alpha)
+    def b_coes(alpha, j):
+        return (j + 1) ** (2 - alpha) - j ** (2 - alpha)
+
+    # start with the points outside of the domain
+    L2C = b_coes(alpha, 0) * (f_values[num_points - 3] - f_values[num_points - 2] - f_values[num_points - 1] + f_name(num_points * step_size)) #f_name(num_points * step_size)
+    L2C += b_coes(alpha, num_points - 2) * (f_name(-1 * step_size) + f_values[2] - f_values[1] - f_values[0])
+    for k in range(1, num_points - 2):
+        L2C += b_coes(alpha, k) * (f_values[num_points - 3 - k] - f_values[num_points - k - 2] - f_values[num_points - k - 1] + f_values[num_points - k]) 
+    L2C *= step_size ** (-1 * alpha) / Gamma(3 - alpha) * 0.5
 
     return L2C
