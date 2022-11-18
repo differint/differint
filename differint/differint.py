@@ -13,7 +13,7 @@ def isInteger(n):
 def isPositiveInteger(n):
     return isInteger(n) and n > 0
 
-def checkValues(alpha, domain_start, domain_end, num_points):
+def checkValues(alpha, domain_start, domain_end, num_points, support_complex_alpha=False):
     """ Type checking for valid inputs. """
     
     assert isPositiveInteger(num_points), "num_points is not an integer: %r" % num_points
@@ -23,6 +23,9 @@ def checkValues(alpha, domain_start, domain_end, num_points):
         
     assert isinstance(domain_end, (int, np.integer, float, np.floating)),\
                      "domain_end must be integer or float: %r" % domain_end
+
+    if not support_complex_alpha:
+        assert not isinstance(alpha, complex), "Complex alpha not supported for this algorithm."
     
     return   
 
