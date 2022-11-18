@@ -77,6 +77,10 @@ GL | Computes the GL differintegral over an entire array of function values usin
 GLI | Computes the improved GL differintegral over an entire array of function values
 RLpoint | Computes the RL differintegral at a point
 RL | Computes the RL differintegral over an entire array of function values using matrix methods
+CaputoL1point | Computes the Caputo differintegral at a point using the L1 algorithm
+CaputoL2Cpoint | Computes the Caputo differintegral at a point using the L2C algorithm
+PCsolver | Solves IVPs for fractional ODEs of the form ${}^CD^\alpha[y(x)]=f(x,y(x))$ using the predictor-corrector method
+
 
 Auxiliary Function | Usage
 ------------------ | -----
@@ -86,9 +90,13 @@ GLIinterpolat | Define interpolating coefficients for the improved GL algorithm
 functionCheck | Determines if algorithm function input is callable or an array of numbers
 test_func | Testing function for docstring examples
 poch | Computes the Pochhammer symbol
+Gamma | Computes the gamma function, an extension of the factorial to complex numbers
+Beta | Computes the beta function, a function related to the binomial coefficient
+MittagLeffler | Computes the two parameter Mittag-Leffler function, which is important in the solution of fractional ODEs
 GLcoeffs | Determines the convolution filter composed of generalized binomial coefficients used in the GL algorithm
 RLcoeffs | Calculates the coefficients used in the RLpoint and RL algorithms
 RLmatrix | Determines the matrix used in the RL algorithm
+PCcoeffs | Determines the coefficients used in the PC algorithm
 
 ## Contribute
 To contribute to this project, see the [contributing guidelines](https://github.com/snimpids/differint/blob/master/CONTRIBUTING.md).
