@@ -16,7 +16,7 @@ def isPositiveInteger(n):
 def checkValues(alpha, domain_start, domain_end, num_points):
     """ Type checking for valid inputs. """
     
-    assert type(num_points) is type(1), "num_points is not an integer: %r" % num_points
+    assert isPositiveInteger(num_points), "num_points is not an integer: %r" % num_points
     
     assert isinstance(domain_start, (int, np.integer, float, np.floating)),\
                      "domain_start must be integer or float: %r" % domain_start
