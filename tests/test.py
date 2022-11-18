@@ -77,7 +77,9 @@ class HelperTestCases(unittest.TestCase):
     def test_checkValues(self):
         with self.assertRaises(AssertionError):
             checkValues(0.1, 0, 1, 1.1)
+        with self.assertRaises(AssertionError):
             checkValues(0.1, 1j, 2, 100)
+        with self.assertRaises(AssertionError):
             checkValues(0.1, 1, 2j, 100)
             
     """ Unit tests for gamma function. """
