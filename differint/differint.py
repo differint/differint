@@ -625,3 +625,52 @@ def CaputoL2Cpoint(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
     L2C *= step_size ** (-1 * alpha) / Gamma(3 - alpha) * 0.5
 
     return L2C
+
+def CaputoFromRLpoint(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
+    ''' Calculate the Caputo derivative of a function at a point using the conversion
+        formula from the RL differintegrals.
+
+    see Du, R., Yan, Y. and Liang, Z., (2019). A high-order scheme to
+        approximate the caputo fractional derivative and its application
+        to solve the fractional diffusion wave equation, Journal of
+        Computational Physics, 376, pp. 1312-1330
+
+    Parameters
+    ==========
+        alpha : float
+            The order of the differintegral to be computed. Must be in (1, 2).
+        f_name : function handle, lambda function, list, or 1d-array of 
+                 function values
+            This is the function that is to be differintegrated.
+        domain_start : float
+            The left-endpoint of the function domain. Default value is 0.
+        domain_end : float
+            The right-endpoint of the function domain; the point at which the 
+            differintegral is being evaluated. Default value is 1.
+        num_points : integer
+            The number of points in the domain. Default value is 100.
+    Output
+    ======
+        C : float
+            The Caputo integral evaluated at the corresponding point.
+    '''
+    if alpha <= 1 or alpha >= 2:
+        raise ValueError('Alpha must be in (1, 2) for this method.')
+
+    # Flip the domain limits if they are in the wrong order.
+    if domain_start > domain_end:
+        domain_start, domain_end = domain_end, domain_start
+    
+    # Check inputs.
+    checkValues(alpha, domain_start, domain_end, num_points)
+    f_values, step_size = functionCheck(f_name, domain_start, domain_end, num_points)
+
+    C = 0
+    C -= f_values[0] * domain_end ** (-1 * alpha) / Gamma(1 - alpha)
+    C -= (f_values[1] - f_values[0]) / step_size * domain_end ** (1 - alpha) / Gamma(2 - alpha)
+    C += RLpoint(alpha - 2, f_name, domain_start, float(domain_end + step_size), num_points) / step_size ** 2
+    C -= 2 * RLpoint(alpha - 2, f_name, domain_start, float(domain_end), num_points) / step_size ** 2
+    C -= RLpoint(alpha - 2, f_name, domain_start, float(domain_end - step_size), num_points) / step_size ** 2
+    return C
+
+
