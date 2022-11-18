@@ -79,7 +79,6 @@ class HelperTestCases(unittest.TestCase):
             checkValues(0.1, 0, 1, 1.1)
             checkValues(0.1, 1j, 2, 100)
             checkValues(0.1, 1, 2j, 100)
-            checkValues(1+1j, 1, 2, 100)
             
     """ Unit tests for gamma function. """
     
