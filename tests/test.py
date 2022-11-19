@@ -77,9 +77,23 @@ class HelperTestCases(unittest.TestCase):
     def test_checkValues(self):
         with self.assertRaises(AssertionError):
             checkValues(0.1, 0, 1, 1.1)
+        with self.assertRaises(AssertionError):
             checkValues(0.1, 1j, 2, 100)
+        with self.assertRaises(AssertionError):
             checkValues(0.1, 1, 2j, 100)
-            checkValues(1+1j, 1, 2, 100)
+        with self.assertRaises(AssertionError):
+            checkValues(0.1, 0, 1, -100)
+        with self.assertRaises(AssertionError):
+            checkValues(1+1j, 0, 1, 100)
+        checkValues(0.5, 0, 1, 100, support_complex_alpha=True)
+        checkValues(1+1j, 0, 1, 100, support_complex_alpha=True)
+        alpha_vals = np.array([0.1, 0.2])
+        domain_vals = np.array([0.1, 1, 2.0, -1])
+        num_vals = np.array([1., 100.0])
+        [[[[checkValues(alpha, domain_start, domain_end, num_points) for alpha in alpha_vals] 
+                                                                     for domain_start in domain_vals] 
+                                                                     for domain_end in domain_vals]
+                                                                     for num_points in num_vals]
             
     """ Unit tests for gamma function. """
     

@@ -13,19 +13,19 @@ def isInteger(n):
 def isPositiveInteger(n):
     return isInteger(n) and n > 0
 
-def checkValues(alpha, domain_start, domain_end, num_points):
+def checkValues(alpha, domain_start, domain_end, num_points, support_complex_alpha=False):
     """ Type checking for valid inputs. """
     
-    assert type(num_points) is type(1), "num_points is not an integer: %r" % num_points
+    assert isPositiveInteger(num_points), "num_points is not an integer: %r" % num_points
     
-    assert type(domain_start) is type(0.0) \
-        or type(domain_start) is type(0), "domain_start must be integer or float: %r" % domain_start
+    assert isinstance(domain_start, (int, np.integer, float, np.floating)),\
+                     "domain_start must be integer or float: %r" % domain_start
         
-    assert type(domain_end) is type(0.0) \
-        or type(domain_end) is type(0), "domain_end must be integer or float: %r" % domain_end
-        
-    # Currently there is no support for complex orders (17 Jan 2018).
-    assert type(alpha) is not type(1+1j), "alpha must be real: %r" % alpha
+    assert isinstance(domain_end, (int, np.integer, float, np.floating)),\
+                     "domain_end must be integer or float: %r" % domain_end
+
+    if not support_complex_alpha:
+        assert not isinstance(alpha, complex), "Complex alpha not supported for this algorithm."
     
     return   
 
