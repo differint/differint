@@ -1,10 +1,17 @@
+from __future__ import print_function
+
 import numpy as np
 
 def isInteger(n):
-    if n >= 0 and (type(n) is type(0)):
+    if n.imag:
+        return False
+    if float(n.real).is_integer():
         return True
     else:
         return False
+
+def isPositiveInteger(n):
+    return isInteger(n) and n > 0
 
 def checkValues(alpha, domain_start, domain_end, num_points):
     """ Type checking for valid inputs. """
@@ -38,20 +45,26 @@ def functionCheck(f_name, domain_start, domain_end, num_points):
     return f_values, step_size
 
 def poch(a,n):
-    """ Returns the Pochhammer symbol (a)_n. """
-    
-    # First, check if 'a' is a real number (this is currently only working for reals).
-    assert type(a) is not type(1+1j), "a must be real: %r" % a
-    isInteger(n)
-    
-    # Compute the Pochhammer symbol.
-    if n == 0:
-        return 1.0
-    else:
-        poch = 1
-        for j in range(n):
-            poch *= (a + j)
-        return poch
+    """ Returns the Pochhammer symbol (a)_n. a can be any complex or real number 
+        except the negative integers and 0. n can be any nonnegative real.
+    """
+    if isPositiveInteger(n):
+        # Compute the Pochhammer symbol.
+        n = int(n)
+        if n == 0:
+            return 1.0
+        else:
+            poch = 1
+            for j in range(n):
+                poch *= (a + j)
+            return poch
+
+    # if a and a + n are both nonpositive integers, we can use another formula...
+    # see here https://www.mathworks.com/help/symbolic/sym.pochhammer.html
+    if isPositiveInteger(-1 * a) and isPositiveInteger(-1 * a - n):
+        sign = -1 if np.abs(n % 2) == 1 else 1
+        return sign * Gamma(1 - a) / Gamma(1 - a - n)
+    return Gamma(a + n) / Gamma(a)
     
 def Gamma(z):
     """ Paul Godfrey's Gamma function implementation valid for z complex.
@@ -121,7 +134,7 @@ def Gamma(z):
     
     if type(zz) == 'complex':
         return f.astype(complex)
-    elif isInteger(zz):
+    elif isPositiveInteger(zz):
         f = np.round(f)
         return f.astype(int)
     else:
@@ -132,6 +145,49 @@ def Beta(x,y):
     
     return Gamma(x)*Gamma(y)/Gamma(x+y)
     
+def MittagLeffler(a, b, x, num_terms=50, *, ignore_special_cases=False):
+    ''' Calculate the Mittag-Leffler function by checking for special cases, and trying to 
+        reduce the parameters. If neither of those work, it just brute forces it.
+        
+        Parameters
+       ==========
+        a : float
+            The first parameter of the Mittag-Leffler function.
+        b : float
+            The second parameter of the Mittag-Leffler function
+        x : float or 1D-array of floats
+            The value or values to be evaluated at.
+        num_terms : int
+            The number of terms to calculate in the sum. Ignored if 
+            a special case can be used instead. Default value is 100.
+        ignore_special_cases : bool
+            Don't use the special cases, use the series definition.
+            Probably only useful for testing. Default value is False.
+    '''
+    # check for quick special cases
+    if not ignore_special_cases:
+        if a == 0:
+            if (np.abs(x) < 1).all():
+                return 1 / Gamma(b) * 1 / (1 - x)
+            return x * np.inf
+        elif a == 0.5 and b == 1:
+            # requires calculation of the complementary error function
+            pass
+        elif a == 1 and b == 1:
+            return np.exp(x)
+        elif a == 2 and b == 1:
+            return np.cosh(np.sqrt(x))
+        elif a == 1 and b == 2:
+            return (np.exp(x) - 1) / x
+        elif a == 2 and b == 2:
+            return np.sinh(np.sqrt(x)) / np.sqrt(x)
+    # manually calculate with series definition
+    exponents = np.arange(num_terms)
+    exp_vals = np.array([x]).T ** exponents
+    gamma_vals = np.array([Gamma(exponent * a + b) for exponent in exponents])
+    return np.sum(exp_vals / gamma_vals, axis=1)
+
+
 def GLcoeffs(alpha,n):
     """ Computes the GL coefficient array of size n. 
     
@@ -140,7 +196,7 @@ def GLcoeffs(alpha,n):
     """ 
     
     # Validate input.
-    isInteger(n)
+    isPositiveInteger(n)
     
     # Get generalized binomial coefficients.
     GL_filter = np.zeros(n+1,)
@@ -343,7 +399,7 @@ def CRONE(alpha, f_name):
             
         return imgx, imgy
     
-    elif len(np.shape(f_name) == 1):
+    elif len(np.shape(f_name)) == 1:
         w = len(f_name)
         CRONEx = CRONEfilter(w, alpha) # w is the length of the array
         
@@ -476,3 +532,93 @@ class GLIinterpolat:
         self.nxt = alpha*(2+alpha)/8
         self.crr = (4-alpha*alpha)/4
         self.prv = alpha*(alpha-2)/8
+
+def PCcoeffs(alpha, j, n):
+    if 1 < alpha:
+        if j == 0:
+            return (n+1)**alpha * (alpha - n) + n**alpha * (2 * n - alpha - 1) - (n - 1)**(alpha + 1)
+        elif j == n:
+            return 2 ** (alpha + 1) - alpha - 3
+        return (n - j + 2) ** (alpha + 1) + 3 * (n - j) ** (alpha + 1) - 3 * (n - j + 1) ** (alpha + 1) - (n - j - 1) ** (alpha + 1)
+
+def PCsolver(initial_values, alpha, f_name, domain_start=0, domain_end=1, num_points=100):
+    """ Solve an equation of the form D[y(x)]=f(x, y(x)) using the predictor-corrector
+        method, modified to be compatible with fractional derivatives.
+
+    see Deng, W. (2007) Short memory principle and a predictor–corrector approach for 
+        fractional differential equations. Journal of Computational and Applied 
+        Mathematics.
+
+    test examples from
+        Baskonus, H.M., Bulut, H. (2015) On the numerical solutions of some fractional
+        ordinary differential equations by fractional Adams-Bashforth-Moulton method.
+        De Gruyter.
+        Weilbeer, M. (2005) Efficient Numerical Methods for Fractional Differential
+        Equations and their Analytical Background. 
+
+
+        
+    Parameters
+    ==========
+        initial_values : float 1d-array
+            A list of initial values for the IVP. There should be as many IVs
+            as ceil(alpha).
+        alpha : float
+            The order of the differintegral in the equation to be computed.
+        f_name : function handle or lambda function
+            This is the function on the right side of the equation, and should
+            accept two variables; first the independant variable, and second
+            the equation to be solved.
+        domain_start : float
+            The left-endpoint of the function domain. Default value is 0.
+        domain_end : float
+            The right-endpoint of the function domain; the point at which the 
+            differintegral is being evaluated. Default value is 1.
+        num_points : integer
+            The number of points in the domain. Default value is 100.
+            
+    Output
+    ======
+        y_correction : float 1d-array
+            The calculated solution to the IVP at each of the points 
+            between the left and right endpoint.
+
+    Examples:
+        >>> f_name = lambda x, y : y - x - 1
+        >>> initial_values = [1, 1]
+        >>> y_solved = PCsolver(initial_values, 1.5, f_name)
+        >>> theoretical = np.linspace(0, 1, 100) + 1
+        >>> np.allclose(y_solved, theoretical)
+        True
+    """
+    x_points = np.linspace(domain_start, domain_end, num_points)
+    step_size = x_points[1] - x_points[0]
+    y_correction = np.zeros(num_points, dtype='complex_')
+    y_prediction = np.zeros(num_points, dtype='complex_')
+    
+    y_prediction[0] = initial_values[0]            
+    y_correction[0] = initial_values[0]
+    for x_index in range(num_points - 1):
+        initial_value_contribution = 0
+        if 1 < alpha and alpha < 2:
+            initial_value_contribution = initial_values[1] * step_size
+        elif 2 < alpha:
+            for k in range(1, int(np.ceil(alpha))):
+                initial_value_contribution += initial_values[k] / np.math.factorial(k) * (x_points[x_index + 1] ** k - x_points[x_index] ** k) 
+        elif alpha < 1:
+            raise ValueError('Not yet supported!')
+        y_prediction[x_index + 1] += initial_value_contribution
+        y_prediction[x_index + 1] += y_correction[x_index]
+        y_prediction[x_index + 1] += step_size ** alpha / Gamma(alpha + 1) * f_name(x_points[x_index], y_correction[x_index])
+        subsum = 0
+        for j in range(x_index + 1):
+            subsum += PCcoeffs(alpha, j, x_index) * f_name(x_points[j], y_correction[j])
+        y_prediction[x_index + 1] += step_size ** alpha / Gamma(alpha + 2) * subsum
+
+        y_correction[x_index + 1] += initial_value_contribution
+        y_correction[x_index + 1] += y_correction[x_index]
+        y_correction[x_index + 1] += step_size ** alpha / Gamma(alpha + 2) * alpha * f_name(x_points[x_index], y_correction[x_index])
+        y_correction[x_index + 1] += step_size ** alpha / Gamma(alpha + 2) * f_name(x_points[x_index + 1], y_prediction[x_index + 1])
+        y_correction[x_index + 1] += step_size ** alpha / Gamma(alpha + 2) * subsum
+    
+    return y_correction
