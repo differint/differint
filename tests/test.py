@@ -104,7 +104,7 @@ class HelperTestCases(unittest.TestCase):
         self.assertEqual(Gamma(-2),np.inf)
         
     def testRealValue(self):
-        self.assertEqual(Gamma(1.25),0.9064024770554769)
+        self.assertEqual(np.round(Gamma(1.25), 12), 0.906402477055)
 
     def testComplexValue(self):
         self.assertEqual(np.round(Gamma(1j), 4), -0.1549-0.498j)
