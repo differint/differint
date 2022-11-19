@@ -682,7 +682,7 @@ def CaputoL2Cpoint(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
 
 def CaputoFromRLpoint(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
     ''' Calculate the Caputo derivative of a function at a point using the conversion
-        formula from the RL differintegrals.
+        formula from the RL differintegrals. DOESN'T CURRENTLY WORK.
 
     see Du, R., Yan, Y. and Liang, Z., (2019). A high-order scheme to
         approximate the caputo fractional derivative and its application
