@@ -40,9 +40,9 @@
   - 'GL' now uses DFT for faster computation
   - 'GL' changed to 'GLpoint'
   - 'RLtrap' now called 'RLpoint'
-  
+
 2018-05-03
-  
+
 ### Added 
   
   - 'CRONE' - calcualte GL differintegral operator using CRONE
@@ -57,7 +57,7 @@
 2022-11-13
   
 ### Added
-  
+
   - 'isPositiveInteger' - check if a number is and integer and positive
   - 'PCsolver' - solve initial value fractional ODEs using the predictor-corrector method
   - Caputo differintegral using the L1, L2, and L2C methods
