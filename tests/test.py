@@ -85,6 +85,7 @@ class HelperTestCases(unittest.TestCase):
             checkValues(0.1, 0, 1, -100)
         with self.assertRaises(AssertionError):
             checkValues(1+1j, 0, 1, 100)
+        checkValues(0.5, 0, 1, 100, support_complex_alpha=True)
         checkValues(1+1j, 0, 1, 100, support_complex_alpha=True)
         alpha_vals = np.array([0.1, 0.2])
         domain_vals = np.array([0.1, 1, 2.0, -1])
