@@ -11,7 +11,7 @@ def isInteger(n):
         return False
 
 def isPositiveInteger(n):
-    return isInteger(n) and n > 0
+    return isInteger(n) and n.real > 0
 
 def checkValues(alpha, domain_start, domain_end, num_points, support_complex_alpha=False):
     """ Type checking for valid inputs. """

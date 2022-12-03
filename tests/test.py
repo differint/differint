@@ -55,6 +55,7 @@ class HelperTestCases(unittest.TestCase):
         self.assertTrue(isPositiveInteger(1))
         self.assertFalse(isPositiveInteger(1.1))
         self.assertFalse(isPositiveInteger(-1))
+        self.assertFalse(isPositiveInteger(1+1j))
     
     def test_pochhammer(self):
         self.assertEqual(poch(poch_first_argument, poch_second_argument), poch_true_answer)
