@@ -13,19 +13,19 @@ def isInteger(n):
 def isPositiveInteger(n):
     return isInteger(n) and n > 0
 
-def checkValues(alpha, domain_start, domain_end, num_points):
+def checkValues(alpha, domain_start, domain_end, num_points, support_complex_alpha=False):
     """ Type checking for valid inputs. """
     
-    assert type(num_points) is type(1), "num_points is not an integer: %r" % num_points
+    assert isPositiveInteger(num_points), "num_points is not an integer: %r" % num_points
     
-    assert type(domain_start) is type(0.0) \
-        or type(domain_start) is type(0), "domain_start must be integer or float: %r" % domain_start
+    assert isinstance(domain_start, (int, np.integer, float, np.floating)),\
+                     "domain_start must be integer or float: %r" % domain_start
         
-    assert type(domain_end) is type(0.0) \
-        or type(domain_end) is type(0), "domain_end must be integer or float: %r" % domain_end
-        
-    # Currently there is no support for complex orders (17 Jan 2018).
-    assert type(alpha) is not type(1+1j), "alpha must be real: %r" % alpha
+    assert isinstance(domain_end, (int, np.integer, float, np.floating)),\
+                     "domain_end must be integer or float: %r" % domain_end
+
+    if not support_complex_alpha:
+        assert not isinstance(alpha, complex), "Complex alpha not supported for this algorithm."
     
     return   
 
@@ -73,7 +73,12 @@ def Gamma(z):
         15 significant digits of accuracy for real z and 13
         significant digits for other values.
     """
-    
+    if not (type(z) == type(1+1j)):
+        if isPositiveInteger(-1 * z):
+            return np.inf
+        from math import gamma
+        return gamma(z)
+
     siz = np.size(z)
     zz = z
     f = np.zeros(2,)
@@ -533,6 +538,195 @@ class GLIinterpolat:
         self.crr = (4-alpha*alpha)/4
         self.prv = alpha*(alpha-2)/8
 
+def CaputoL1point(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
+    ''' Calculate the Caputo derivative of a function at a point using the L1 method.
+
+    see Karniadakis, G.E.. (2019). Handbook of Fractional Calculus with Applications
+    Volume 3: Numerical Methods. De Gruyter.
+
+    Parameters
+    ==========
+        alpha : float
+            The order of the differintegral to be computed. Must be in (0, 1)
+        f_name : function handle, lambda function, list, or 1d-array of 
+                 function values
+            This is the function that is to be differintegrated.
+        domain_start : float
+            The left-endpoint of the function domain. Default value is 0.
+        domain_end : float
+            The right-endpoint of the function domain; the point at which the 
+            differintegral is being evaluated. Default value is 1.
+        num_points : integer
+            The number of points in the domain. Default value is 100.
+    Output
+    ======
+        L1 : float
+            The Caputo L1 integral evaluated at the corresponding point.
+    '''
+
+    if alpha <= 0 or alpha >= 1:
+        raise ValueError('Alpha must be in (0, 1) for this method.')
+
+    # Flip the domain limits if they are in the wrong order.
+    if domain_start > domain_end:
+        domain_start, domain_end = domain_end, domain_start
+    
+    # Check inputs.
+    checkValues(alpha, domain_start, domain_end, num_points)
+    f_values, step_size = functionCheck(f_name, domain_start, domain_end, num_points)
+
+    f_values = np.array(f_values)
+    j_values = np.arange(0, num_points-1)
+    coefficients = (j_values + 1) ** (1 - alpha) - (j_values) ** (1 - alpha)
+    f_differences = f_values[1:] - f_values[:-1]
+    f_differences = f_differences[::-1]
+    L1 = 1 / Gamma(2 - alpha) * np.sum(np.multiply(coefficients * step_size**(-alpha), f_differences))
+    
+    return L1
+
+def CaputoL2point(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
+    ''' Calculate the Caputo derivative of a function at a point using the L2 method.
+        A note: this method requires evaluation of the point f(domain_end + step size),
+        and currently will only work if `f_name` is a callable function.
+
+    see Karniadakis, G.E.. (2019). Handbook of Fractional Calculus with Applications
+    Volume 3: Numerical Methods. De Gruyter.
+
+    Parameters
+    ==========
+        alpha : float
+            The order of the differintegral to be computed. Must be in (1, 2).
+        f_name : function handle or lambda function
+            This is the function that is to be differintegrated.
+        domain_start : float
+            The left-endpoint of the function domain. Default value is 0.
+        domain_end : float
+            The right-endpoint of the function domain; the point at which the 
+            differintegral is being evaluated. Default value is 1.
+        num_points : integer
+            The number of points in the domain. Default value is 100.
+    Output
+    ======
+        L2 : float
+            The Caputo L2 integral evaluated at the corresponding point.
+    '''
+    if alpha <= 1 or alpha >= 2:
+        raise ValueError('Alpha must be in (1, 2) for this method.')
+    # Flip the domain limits if they are in the wrong order.
+    if domain_start > domain_end:
+        domain_start, domain_end = domain_end, domain_start
+    
+    # Check inputs.
+    checkValues(alpha, domain_start, domain_end, num_points)
+    f_values, step_size = functionCheck(f_name, domain_start, domain_end, num_points)
+
+    def b_coes(alpha, j):
+        return (j + 1) ** (2 - alpha) - j ** (2 - alpha)
+
+    # start with the point outside of the domain
+    L2 = b_coes(alpha, 0) * (f_values[num_points - 2] + f_name(num_points * step_size) - 2 * f_values[num_points - 1]) #f_name(num_points * step_size)
+    for k in range(1, num_points - 2):
+        L2 += b_coes(alpha, k) * (f_values[num_points - 2 - k] + f_values[num_points - k] - 2 * f_values[num_points - k - 1])
+    return L2 * step_size ** (-1 * alpha) / Gamma(3 - alpha)
+
+
+def CaputoL2Cpoint(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
+    ''' Calculate the Caputo derivative of a function at a point using the L2C method.
+        A note: this method requires evaluation of the points f(domain_end + step size)
+        and f(-step_size), and currently will only work if `f_name` is a callable 
+        function.
+
+    see Karniadakis, G.E.. (2019). Handbook of Fractional Calculus with Applications
+    Volume 3: Numerical Methods. De Gruyter.
+
+    Parameters
+    ==========
+        alpha : float
+            The order of the differintegral to be computed. Must be in (0, 2).
+        f_name : function handle or lambda function
+            This is the function that is to be differintegrated.
+        domain_start : float
+            The left-endpoint of the function domain. Default value is 0.
+        domain_end : float
+            The right-endpoint of the function domain; the point at which the 
+            differintegral is being evaluated. Default value is 1.
+        num_points : integer
+            The number of points in the domain. Default value is 100.
+    Output
+    ======
+        L2C : float
+            The Caputo L2C integral evaluated at the corresponding point.
+    '''
+    if alpha <= 0 or alpha >= 2:
+        raise ValueError('Alpha must be in (0, 1) or (1, 2) for this method.')
+
+    # Flip the domain limits if they are in the wrong order.
+    if domain_start > domain_end:
+        domain_start, domain_end = domain_end, domain_start
+    
+    # Check inputs.
+    checkValues(alpha, domain_start, domain_end, num_points)
+    f_values, step_size = functionCheck(f_name, domain_start, domain_end, num_points)
+
+    def b_coes(alpha, j):
+        return (j + 1) ** (2 - alpha) - j ** (2 - alpha)
+
+    # start with the points outside of the domain
+    L2C = b_coes(alpha, 0) * (f_values[num_points - 3] - f_values[num_points - 2] - f_values[num_points - 1] + f_name(num_points * step_size)) #f_name(num_points * step_size)
+    L2C += b_coes(alpha, num_points - 2) * (f_name(-1 * step_size) + f_values[2] - f_values[1] - f_values[0])
+    for k in range(1, num_points - 2):
+        L2C += b_coes(alpha, k) * (f_values[num_points - 3 - k] - f_values[num_points - k - 2] - f_values[num_points - k - 1] + f_values[num_points - k]) 
+    L2C *= step_size ** (-1 * alpha) / Gamma(3 - alpha) * 0.5
+
+    return L2C
+
+def CaputoFromRLpoint(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
+    ''' Calculate the Caputo derivative of a function at a point using the conversion
+        formula from the RL differintegrals. DOESN'T CURRENTLY WORK.
+
+    see Du, R., Yan, Y. and Liang, Z., (2019). A high-order scheme to
+        approximate the caputo fractional derivative and its application
+        to solve the fractional diffusion wave equation, Journal of
+        Computational Physics, 376, pp. 1312-1330
+
+    Parameters
+    ==========
+        alpha : float
+            The order of the differintegral to be computed. Must be in (1, 2).
+        f_name : function handle, lambda function, list, or 1d-array of 
+                 function values
+            This is the function that is to be differintegrated.
+        domain_start : float
+            The left-endpoint of the function domain. Default value is 0.
+        domain_end : float
+            The right-endpoint of the function domain; the point at which the 
+            differintegral is being evaluated. Default value is 1.
+        num_points : integer
+            The number of points in the domain. Default value is 100.
+    Output
+    ======
+        C : float
+            The Caputo integral evaluated at the corresponding point.
+    '''
+    if alpha <= 1 or alpha >= 2:
+        raise ValueError('Alpha must be in (1, 2) for this method.')
+
+    # Flip the domain limits if they are in the wrong order.
+    if domain_start > domain_end:
+        domain_start, domain_end = domain_end, domain_start
+    
+    # Check inputs.
+    checkValues(alpha, domain_start, domain_end, num_points)
+    f_values, step_size = functionCheck(f_name, domain_start, domain_end, num_points)
+
+    C = 0
+    C -= f_values[0] * domain_end ** (-1 * alpha) / Gamma(1 - alpha)
+    C -= (f_values[1] - f_values[0]) / step_size * domain_end ** (1 - alpha) / Gamma(2 - alpha)
+    C += RLpoint(alpha - 2, f_name, domain_start, float(domain_end + step_size), num_points) / step_size ** 2
+    C -= 2 * RLpoint(alpha - 2, f_name, domain_start, float(domain_end), num_points) / step_size ** 2
+    C -= RLpoint(alpha - 2, f_name, domain_start, float(domain_end - step_size), num_points) / step_size ** 2
+    return C
+
 def PCcoeffs(alpha, j, n):
     if 1 < alpha:
         if j == 0:
@@ -555,8 +749,6 @@ def PCsolver(initial_values, alpha, f_name, domain_start=0, domain_end=1, num_po
         De Gruyter.
         Weilbeer, M. (2005) Efficient Numerical Methods for Fractional Differential
         Equations and their Analytical Background. 
-
-
         
     Parameters
     ==========

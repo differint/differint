@@ -12,6 +12,8 @@ size_coefficient_array = 20
 test_N = 512
 sqrtpi2 = 0.88622692545275794
 truevaluepoly = 0.94031597258
+truevaluepoly_caputo = 1.50450555 # 8 / (3 * np.sqrt(np.pi))
+truevaluepoly_caputo_higher = 2 / Gamma(1.5)
 PC_x_power = np.linspace(0, 1, 100) ** 5.5
 
 INTER = GLIinterpolat(1)
@@ -77,9 +79,23 @@ class HelperTestCases(unittest.TestCase):
     def test_checkValues(self):
         with self.assertRaises(AssertionError):
             checkValues(0.1, 0, 1, 1.1)
+        with self.assertRaises(AssertionError):
             checkValues(0.1, 1j, 2, 100)
+        with self.assertRaises(AssertionError):
             checkValues(0.1, 1, 2j, 100)
-            checkValues(1+1j, 1, 2, 100)
+        with self.assertRaises(AssertionError):
+            checkValues(0.1, 0, 1, -100)
+        with self.assertRaises(AssertionError):
+            checkValues(1+1j, 0, 1, 100)
+        checkValues(0.5, 0, 1, 100, support_complex_alpha=True)
+        checkValues(1+1j, 0, 1, 100, support_complex_alpha=True)
+        alpha_vals = np.array([0.1, 0.2])
+        domain_vals = np.array([0.1, 1, 2.0, -1])
+        num_vals = np.array([1., 100.0])
+        [[[[checkValues(alpha, domain_start, domain_end, num_points) for alpha in alpha_vals] 
+                                                                     for domain_start in domain_vals] 
+                                                                     for domain_end in domain_vals]
+                                                                     for num_points in num_vals]
             
     """ Unit tests for gamma function. """
     
@@ -90,7 +106,7 @@ class HelperTestCases(unittest.TestCase):
         self.assertEqual(Gamma(-2),np.inf)
         
     def testRealValue(self):
-        self.assertEqual(Gamma(1.25),0.9064024770554769)
+        self.assertEqual(np.round(Gamma(1.25), 12), 0.906402477055)
 
     def testComplexValue(self):
         self.assertEqual(np.round(Gamma(1j), 4), -0.1549-0.498j)
@@ -153,6 +169,21 @@ class TestAlgorithms(unittest.TestCase):
         
     def test_RL_accuracy_sqrt(self):
         self.assertTrue(abs(RL_result - sqrtpi2) <= 1e-4)
+
+    def test_CaputoL1point_accuracy_sqrt(self):
+        self.assertTrue(abs(CaputoL1point(0.5, lambda x: x**0.5, 0, 1., 1024)-sqrtpi2) <= 1e-2)
+
+    def test_CaputoL1point_accuracy_polynomial(self):
+        self.assertTrue(abs(CaputoL1point(0.5, lambda x: x**2-1, 0, 1., 1024)-truevaluepoly_caputo) <= 1e-3)
+    
+    def test_CaputoL2point_accuracy_polynomial(self):
+        self.assertTrue(abs(CaputoL2point(1.5, lambda x: x**2, 0, 1., 1024)-truevaluepoly_caputo_higher) <= 1e-1)
+
+    def test_CaputoL2Cpoint_accuracy_polynomial_higher(self):
+        self.assertTrue(abs(CaputoL2Cpoint(1.5, lambda x: x**2, 0, 1., 1024)-truevaluepoly_caputo_higher) <= 1e-1)
+
+    def test_CaputoL2Cpoint_accuracy_polynomial(self):
+        self.assertTrue(abs(CaputoL2Cpoint(0.5, lambda x: x**2, 0, 1., 1024)-truevaluepoly_caputo) <= 1e-3)
 
 class TestSolvers(unittest.TestCase):
     """ Tests for the correct solution to the equations. """
