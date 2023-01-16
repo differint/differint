@@ -19,5 +19,6 @@ def CaputoL1Error(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
     checkValues(alpha, domain_start, domain_end, num_points)
     f_values, step_size = functionCheck(f_name, domain_start, domain_end, num_points)
 
-	norm_f = np.max(np.abs(np.diff(f_values, 2) / step_size ** 2))
-	return (alpha + 1) / Gamma(1 - alpha) * norm_f * step_size ** (2 - alpha)
+    norm_f = np.max(np.abs(np.diff(f_values, 2) / step_size ** 2))
+    return (alpha + 1) / Gamma(1 - alpha) * norm_f * step_size ** (2 - alpha)
+
