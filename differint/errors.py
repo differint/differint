@@ -1,7 +1,7 @@
 # File for computation of errors for respective algorithms
 import numpy as np
 
-from differint import *
+from differint.differint.differint import *
 
 def CaputoL1Error(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
 	''' Calculate a bound on the error from applying the CaputoL1 algorithm on a function.
