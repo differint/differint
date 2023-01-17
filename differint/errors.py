@@ -31,6 +31,8 @@ def RLError(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
    	see Karniadakis, G.E.. (2019). Handbook of Fractional Calculus with Applications
     	Volume 3: Numerical Methods. De Gruyter.
     '''
+    if domain_start != 0:
+    	print('This method is only accurate for meshes starting at 0, take the result with a grain of salt...')
     # Flip the domain limits if they are in the wrong order.
     if domain_start > domain_end:
         domain_start, domain_end = domain_end, domain_start
