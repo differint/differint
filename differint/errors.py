@@ -7,12 +7,13 @@ def CaputoL1Error(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
     ''' Calculate a bound on the error from applying the CaputoL1 algorithm on a function.
         inf_norm(true - calculated) <= C * inf_norm(f'') * h ** (2 - alpha)
         where C = (alpha + 1)/Gamma(1 - alpha) * k^(2 - alpha)
+        This will only be accurate if the proper left endpoint is chosen for the desired
+        function; ie for f(x)=x, you should use domain_start = 0. For f(x)=exp(x) you 
+        should choose a domain_start approaching negative infinity.
 
     see Ming Li et al (2011). A numerical evaluation and regularization of Caputo fractional
         derivatives. Journal of Physics: Conference Series.
     '''
-    if domain_start != 0:
-    	print('This method is only accurate for meshes starting at 0, take the result with a grain of salt...')
     # Flip the domain limits if they are in the wrong order.
     if domain_start > domain_end:
         domain_start, domain_end = domain_end, domain_start
@@ -29,13 +30,15 @@ def RLError(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
     ''' Calculate a bound on the error from applying the RL Differintegral to a function. The 
         formula is accurate for a trapizoid approximation for numerical integration.
         |E| <= C_alpha * max(|f''|) * h^2 * b^alpha
-        where b is the right endpoint, C_alpha is some constant dependant on alpha, and h is the spacing between points.
+        where b is the right endpoint, C_alpha is some constant dependant on alpha, and h is the 
+        spacing between points.
+        This will only be accurate if the proper left endpoint is chosen for the desired
+        function; ie for f(x)=x, you should use domain_start = 0. For f(x)=exp(x) you 
+        should choose a domain_start approaching negative infinity.
 
    	see Karniadakis, G.E.. (2019). Handbook of Fractional Calculus with Applications
     	Volume 3: Numerical Methods. De Gruyter.
     '''
-    if domain_start != 0:
-    	print('This method is only accurate for meshes starting at 0, take the result with a grain of salt...')
     # Flip the domain limits if they are in the wrong order.
     if domain_start > domain_end:
         domain_start, domain_end = domain_end, domain_start
