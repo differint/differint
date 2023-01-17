@@ -39,5 +39,5 @@ def RLError(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
     norm_f = np.max(np.abs(np.diff(f_values, 2) / step_size ** 2))
     norm_f = np.nan_to_num(norm_f, nan=0)
     # some const "that depends only on alpha"... but what is it??
-    C_alpha = 1
+    C_alpha = 2 + alpha # guess
     return C_alpha * norm_f * domain_end ** alpha * step_size ** 2
