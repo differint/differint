@@ -23,6 +23,7 @@ def CaputoL1Error(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
 
     norm_f = np.max(np.abs(np.diff(f_values, 2) / step_size ** 2))
     return (alpha + 1) / Gamma(1 - alpha) * norm_f * step_size ** (2 - alpha)
+    #return (1 / Gamma(1 - alpha)) * (0.25 + alpha / ((1 - alpha) * (2 - alpha))) * norm_f * step_size ** (2 - alpha)
 
 def RLError(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
     ''' Calculate a bound on the error from applying the RL Differintegral to a function. The 
