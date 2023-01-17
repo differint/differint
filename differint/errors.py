@@ -23,10 +23,13 @@ def CaputoL1Error(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
     return (alpha + 1) / Gamma(1 - alpha) * norm_f * step_size ** (2 - alpha)
 
 def RLError(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
-    ''' Calculate a bound on the error from applying the RL Differintegral to a function. The error
-        calculation comes from the error on the trapizoid approximation for numerical integration,
-        |E| <= (b-a)^3/(12n^2) * max(|f''|)
-        where b is the right endpoint, a is the left endpoint, and n is the number of points.
+    ''' Calculate a bound on the error from applying the RL Differintegral to a function. The 
+        formula is accurate for a trapizoid approximation for numerical integration.
+        |E| <= C_alpha * max(|f''|) * h^2 * b^alpha
+        where b is the right endpoint, C_alpha is some constant dependant on alpha, and h is the spacing between points.
+
+   	see Karniadakis, G.E.. (2019). Handbook of Fractional Calculus with Applications
+    	Volume 3: Numerical Methods. De Gruyter.
     '''
     # Flip the domain limits if they are in the wrong order.
     if domain_start > domain_end:
