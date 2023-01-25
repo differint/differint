@@ -192,8 +192,8 @@ class TestSolvers(unittest.TestCase):
 
     def test_PC_solution_ML(self):
         xs = np.linspace(0, 1, 100)
-        ML_alpha = MittagLeffler(5.5, 1, xs ** 5.5)
-        self.assertTrue((np.abs(PCsolver([1, 0, 0, 0, 0, 0], 5.5, PC_func_ML)-ML_alpha) <= 1e-2).all())
+        ML_alpha = MittagLeffler(2.5, 1, xs ** 2.5)
+        self.assertTrue((np.abs(PCsolver([1, 0, 0, 0, 0, 0], 2.5, PC_func_ML)-ML_alpha) <= 1e-2).all())
 
     def test_PC_solution_linear(self):
         xs = np.linspace(0, 1, 100)
