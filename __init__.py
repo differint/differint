@@ -1,2 +1,2 @@
 __all__ = ['differint', 'tests']
-import differint.differint
+from differint.differint import *
