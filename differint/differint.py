@@ -201,7 +201,7 @@ def GLcoeffs(alpha,n):
     """ 
     
     # Validate input.
-    isPositiveInteger(n)
+    assert isPositiveInteger(n)
     
     # Get generalized binomial coefficients.
     GL_filter = np.zeros(n+1,)
