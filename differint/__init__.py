@@ -1,1 +1,5 @@
-__all__ = ['GL','GLcoeffs','functionCheck','checkValues','isInteger','GLI','GLpoint','RLcoeffs','RLmatrix','RL','poch','RLpoint']
+__all__ = ['isInteger', 'isPositiveInteger','checkValues', 'functionCheck', 'poch', 'Gamma', 'Beta', 
+			'MittagLeffler', 'GLcoeffs', 'GLpoint', 'GL', 'GLI', 'CRONE', 'RLcoeffs', 'RLpoint', 
+			'RLmatrix', 'RL', 'GLIinterpolat', 'CaputoL1point', 'CaputoL2point', 'CaputoL2Cpoint', 
+			'CaputoFromRLpoint', 'PCcoeffs', 'PCsolver']
+from .differint import *
