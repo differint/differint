@@ -206,6 +206,9 @@ def GLcoeffs(alpha,n):
     # Get generalized binomial coefficients.
     GL_filter = np.zeros(n+1,)
     GL_filter[0] = 1
+
+    if alpha.imag != 0:
+        GL_filter = GL_filter.astype(complex)
     
     for i in range(n):
         GL_filter[i+1] = GL_filter[i]*(-alpha + i)/(i+1)
