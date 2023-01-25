@@ -254,7 +254,7 @@ def GLpoint(alpha, f_name, domain_start = 0., domain_end = 1., num_points = 100)
         
     return GL_current*(num_points/(domain_end - domain_start))**alpha
 
-def GL(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 100):
+def GLreal(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 100):
     """ Computes the GL fractional derivative of a function for an entire array
         of function values.
         
