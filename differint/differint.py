@@ -296,6 +296,50 @@ def GLreal(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 100
     result = np.fft.irfft(F*B)*step_size**-alpha
     
     return result
+
+def GL(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 100):
+    """ Computes the GL fractional derivative of a function for an entire array
+        of function values. This supports complex alpha and input function, but
+        if your input is purely real you should probably use the `GLreal`
+        function.
+        
+        Parameters
+       ==========
+        alpha : float
+            The order of the differintegral to be computed.
+        f_name : function handle, lambda function, list, or 1d-array of 
+                 function values
+            This is the function that is to be differintegrated.
+        domain_start : float
+            The left-endpoint of the function domain. Default value is 0.
+        domain_end : float
+            The right-endpoint of the function domain; the point at which the 
+            differintegral is being evaluated. Default value is 1.
+        num_points : integer
+            The number of points in the domain. Default value is 100.
+            
+        Examples:
+        >>> DF_poly = GL(-0.5, lambda x: x**2 - 1)
+        >>> DF_sqrt = GL(0.5, lambda x: np.sqrt(x), 0., 1., 100)
+    """
+    
+    # Flip the domain limits if they are in the wrong order.
+    if domain_start > domain_end:
+        domain_start, domain_end = domain_end, domain_start
+    
+    # Check inputs.
+    checkValues(alpha, domain_start, domain_end, num_points, support_complex_alpha=True)
+    f_values, step_size = functionCheck(f_name, domain_start, domain_end, num_points)
+       
+    # Get the convolution filter.
+    b_coeffs = GLcoeffs(alpha, num_points-1)
+    
+    # Fourier transforms for convolution filter and array of function values.
+    B = np.fft.fft(b_coeffs)
+    F = np.fft.fft(f_values)
+    result = np.fft.ifft(F*B)*step_size**-alpha
+    
+    return result
     
 
 def GLI(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 100):
