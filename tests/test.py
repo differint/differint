@@ -11,6 +11,7 @@ poch_true_answer = 120
 size_coefficient_array = 20
 test_N = 512
 sqrtpi2 = 0.88622692545275794
+isinh_result = 1j * np.sinh(0.5*np.pi - 1j*1)
 truevaluepoly = 0.94031597258
 truevaluepoly_caputo = 1.50450555 # 8 / (3 * np.sqrt(np.pi))
 truevaluepoly_caputo_higher = 2 / Gamma(1.5)
@@ -27,6 +28,12 @@ checked_function2, test_stepsize2 = functionCheck(np.ones(test_N),0,1,test_N)
 # Get results for checking accuracy.
 GL_r = GL(0.5, lambda x: np.sqrt(x), 0, 1, test_N)
 GL_result = GL_r[-1]
+
+GLreal_r = GLreal(0.5, lambda x: np.sqrt(x), 0, 1, test_N)
+GLreal_result = GLreal_r[-1]
+
+GLcomplex_r = GL(1j, lambda x: np.sin(x), -100, 1, test_N)
+GLcomplex_result = GLcomplex_r[-1]
 
 GLI_r = GLI(0.5, lambda x: np.sqrt(x), 0, 1, test_N)
 GLI_result = GLI_r[-1]
@@ -157,6 +164,12 @@ class TestAlgorithms(unittest.TestCase):
         
     def test_GL_accuracy_sqrt(self):
         self.assertTrue(abs(GL_result - sqrtpi2) <= 1e-4)
+
+    def test_GLreal_accuracy_sqrt(self):
+        self.assertTrue(abs(GL_result - sqrtpi2) <= 1e-4)
+
+    def test_GL_complex_sin(self):
+        self.assertTrue(abs(GLcomplex_result - isinh_result) <= 1e-4)
         
     def test_GLI_accuracy_sqrt(self):
         self.assertTrue(abs(GLI_result - sqrtpi2) <= 1e-4)
