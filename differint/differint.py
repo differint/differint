@@ -2,6 +2,12 @@ from __future__ import print_function
 
 import numpy as np
 
+class _0_i_Complex(complex):
+    def __rpow__(self, other):
+        if other == 0:
+            return 0
+        return other ** (self.real + 1j * self.imag)
+
 def isInteger(n):
     if n.imag:
         return False
