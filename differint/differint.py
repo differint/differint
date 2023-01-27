@@ -487,7 +487,7 @@ def RLcoeffs(index_k, index_j, alpha, *, zero_i_behavior='ignore'):
     else:
         return ((index_k-index_j+1)**cast_type(1-alpha)+(index_k-index_j-1)**cast_type(1-alpha)-2*(index_k-index_j)**cast_type(1-alpha))
     
-def RLpoint(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 100):
+def RLpoint(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 100, *, zero_i_behavior='ignore'):
     """Calculate the RL differintegral at a point with the trapezoid rule.
     
     Parameters
@@ -504,6 +504,11 @@ def RLpoint(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 10
             differintegral is being evaluated. Default value is 1.
         num_points : integer
             The number of points in the domain. Default value is 100.
+        zero_i_behavior : str in ['ignore', 'zero'], default 'ignore'
+            How to interpret 0^i. By default, no special considerations are made,
+            however this will raise an error. Using 'zero' means 0^i is interpreted
+            as 0, as seen in 
+            https://math.stackexchange.com/questions/1101432/imaginary-order-derivative
             
         Examples:
         >>> RL_sqrt = RLpoint(0.5, lambda x: np.sqrt(x))
@@ -515,14 +520,14 @@ def RLpoint(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 10
         domain_start, domain_end = domain_end, domain_start
     
     # Check inputs.
-    checkValues(alpha, domain_start, domain_end, num_points)
+    checkValues(alpha, domain_start, domain_end, num_points, support_complex_alpha=True)
     f_values, step_size = functionCheck(f_name, domain_start, domain_end, num_points)
     
     C = 1/Gamma(2-alpha)
     
     RL = 0
     for index_j in range(num_points):
-        coeff = RLcoeffs(num_points-1, index_j, alpha)
+        coeff = RLcoeffs(num_points-1, index_j, alpha, zero_i_behavior=zero_i_behavior)
         RL += coeff*f_values[index_j]
         
     RL *= C*step_size**-alpha
