@@ -468,19 +468,24 @@ def CRONE(alpha, f_name):
     else:
         raise InputError(f_name, 'f_name must have dimension <= 2')
 
-def RLcoeffs(index_k, index_j, alpha):
+def RLcoeffs(index_k, index_j, alpha, *, zero_i_behavior='ignore'):
     """Calculates coefficients for the RL differintegral operator.
     
     see Baleanu, D., Diethelm, K., Scalas, E., and Trujillo, J.J. (2012). Fractional
         Calculus: Models and Numerical Methods. World Scientific.
     """
     
+    cast_type = complex
+    if zero_i_behavior == 'zero':
+        alpha = _0_i_Complex(alpha)
+        cast_type = _0_i_Complex
+
     if index_j == 0:
-        return ((index_k-1)**(1-alpha)-(index_k+alpha-1)*index_k**-alpha)
+        return ((index_k-1)**cast_type(1-alpha)-(index_k+alpha-1)*index_k**cast_type(-alpha))
     elif index_j == index_k:
         return 1
     else:
-        return ((index_k-index_j+1)**(1-alpha)+(index_k-index_j-1)**(1-alpha)-2*(index_k-index_j)**(1-alpha))
+        return ((index_k-index_j+1)**cast_type(1-alpha)+(index_k-index_j-1)**cast_type(1-alpha)-2*(index_k-index_j)**cast_type(1-alpha))
     
 def RLpoint(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 100):
     """Calculate the RL differintegral at a point with the trapezoid rule.
