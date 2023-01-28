@@ -601,7 +601,7 @@ class GLIinterpolat:
         self.crr = (4-alpha*alpha)/4
         self.prv = alpha*(alpha-2)/8
 
-def CaputoL1point(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
+def CaputoL1point(alpha, f_name, domain_start=0, domain_end=1, num_points=100, *, zero_i_behavior='ignore'):
     ''' Calculate the Caputo derivative of a function at a point using the L1 method.
 
     see Karniadakis, G.E.. (2019). Handbook of Fractional Calculus with Applications
@@ -621,13 +621,18 @@ def CaputoL1point(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
             differintegral is being evaluated. Default value is 1.
         num_points : integer
             The number of points in the domain. Default value is 100.
+        zero_i_behavior : str in ['ignore', 'zero'] default 'ignore'
+            How to interpret 0^i. By default, no special considerations are made,
+            however this will raise an error. Using 'zero' means 0^i is interpreted
+            as 0, as seen in 
+            https://math.stackexchange.com/questions/1101432/imaginary-order-derivative
     Output
     ======
         L1 : float
             The Caputo L1 integral evaluated at the corresponding point.
     '''
 
-    if alpha <= 0 or alpha >= 1:
+    if alpha.imag == 0 and (alpha.real <= 0 or alpha.real >= 1):
         raise ValueError('Alpha must be in (0, 1) for this method.')
 
     # Flip the domain limits if they are in the wrong order.
@@ -635,12 +640,18 @@ def CaputoL1point(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
         domain_start, domain_end = domain_end, domain_start
     
     # Check inputs.
-    checkValues(alpha, domain_start, domain_end, num_points)
+    checkValues(alpha, domain_start, domain_end, num_points, support_complex_alpha=True)
     f_values, step_size = functionCheck(f_name, domain_start, domain_end, num_points)
 
     f_values = np.array(f_values)
     j_values = np.arange(0, num_points-1)
-    coefficients = (j_values + 1) ** (1 - alpha) - (j_values) ** (1 - alpha)
+
+    if zero_i_behavior == 'ignore':
+        coefficients = (j_values + 1) ** (1 - alpha) - (j_values) ** (1 - alpha)
+    elif zero_i_behavior == 'zero':
+        coefficients = (j_values[1:] + 1) ** (1 - alpha) - (j_values[1:]) ** (1 - alpha)
+        coefficients = np.append([1 ** (1 - alpha)], coefficients)
+
     f_differences = f_values[1:] - f_values[:-1]
     f_differences = f_differences[::-1]
     L1 = 1 / Gamma(2 - alpha) * np.sum(np.multiply(coefficients * step_size**(-alpha), f_differences))
