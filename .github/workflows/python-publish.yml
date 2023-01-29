@@ -9,7 +9,7 @@
 name: differint
 
 on:
-  release: 0.4.0
+  release:
     types: [published]
 
 permissions:
