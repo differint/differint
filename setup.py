@@ -5,7 +5,7 @@ def readme():
             return f.read()
 
 setup(name = 'differint',
-      version = '0.4',
+      version = '1.0.0',
       description = 'Collection of algorithms for numerically calculating fractional derivatives.',
       long_description = readme(),
       long_description_content_type="text/markdown"
