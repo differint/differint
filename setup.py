@@ -8,6 +8,7 @@ setup(name = 'differint',
       version = '0.4',
       description = 'Collection of algorithms for numerically calculating fractional derivatives.',
       long_description = readme(),
+      long_description_content_type=text/markdown
       classifiers=[
         'Development Status :: 4 - Beta',
         'License :: OSI Approved :: MIT License',
