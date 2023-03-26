@@ -336,7 +336,10 @@ def GL(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 100):
     # Check inputs.
     checkValues(alpha, domain_start, domain_end, num_points, support_complex_alpha=True)
     f_values, step_size = functionCheck(f_name, domain_start, domain_end, num_points)
-       
+    
+    if alpha.imag == 0:
+        warn('The specified alpha is real, for better results you may want to use the `GLreal` function instead.')
+
     # Get the convolution filter.
     b_coeffs = GLcoeffs(alpha, num_points-1)
     
