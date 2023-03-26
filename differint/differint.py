@@ -536,19 +536,19 @@ def RLpoint(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 10
     RL *= C*step_size**-alpha
     return RL
 
-def RLmatrix(alpha, N):
+def RLmatrix(alpha, N, *, zero_i_behavior='ignore'):
     """ Define the coefficient matrix for the RL algorithm. """
     
     coeffMatrix = np.zeros((N,N))
     for i in range(N):
         for j in range(i):
-            coeffMatrix[i,j] = RLcoeffs(i,j,alpha)
+            coeffMatrix[i,j] = RLcoeffs(i,j,alpha, zero_i_behavior=zero_i_behavior)
     
     # Place 1 on the main diagonal.
     np.fill_diagonal(coeffMatrix,1)
     return coeffMatrix/Gamma(2-alpha)
 
-def RL(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 100):
+def RL(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 100, *, zero_i_behavior='ignore'):
     """ Calculate the RL algorithm using a trapezoid rule over 
         an array of function values.
         
@@ -583,11 +583,11 @@ def RL(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 100):
         domain_start, domain_end = domain_end, domain_start
     
     # Check inputs.
-    checkValues(alpha, domain_start, domain_end, num_points)
+    checkValues(alpha, domain_start, domain_end, num_points, support_complex_alpha=True)
     f_values, step_size = functionCheck(f_name, domain_start, domain_end, num_points)
     
     # Calculate the RL differintegral.
-    D = RLmatrix(alpha, num_points)
+    D = RLmatrix(alpha, num_points, zero_i_behavior=zero_i_behavior)
     RL = step_size**-alpha*np.dot(D, f_values)
     return RL
 
