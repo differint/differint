@@ -538,8 +538,11 @@ def RLpoint(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 10
 
 def RLmatrix(alpha, N, *, zero_i_behavior='ignore'):
     """ Define the coefficient matrix for the RL algorithm. """
-    
-    coeffMatrix = np.zeros((N,N))
+
+    matrix_type = float
+    if alpha.imag != 0:
+        matrix_type = complex
+    coeffMatrix = np.zeros((N,N), dtype=matrix_type)
     for i in range(N):
         for j in range(i):
             coeffMatrix[i,j] = RLcoeffs(i,j,alpha, zero_i_behavior=zero_i_behavior)
