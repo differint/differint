@@ -638,7 +638,7 @@ def CaputoL1point(alpha, f_name, domain_start=0, domain_end=1, num_points=100, *
     if alpha.imag == 0 and (alpha.real <= 0 or alpha.real >= 1):
         raise ValueError('Alpha must be in (0, 1) for this method.')
     elif alpha.imag != 0:
-        warn('Imaginary-order Caputo differintegrals may not be well-defined for many functions. The results are untested.')
+        print('Imaginary-order Caputo differintegrals may not be well-defined for many functions. The results are untested.')
 
     # Flip the domain limits if they are in the wrong order.
     if domain_start > domain_end:
