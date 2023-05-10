@@ -185,15 +185,15 @@ class TestAlgorithms(unittest.TestCase):
 
     def test_RLpoint_accuracy_complex_sin(self):
         # alpha = 0.9j
-        calculated = RLpoint(0.9j, lambda x: np.sin(x), -100, 2, 100, zero_i_behavior='zero')
+        calculated = RLpoint(0.9j, lambda x: np.sin(x), -10, 2, 100, zero_i_behavior='zero')
         expected = np.sin(0.9j * np.pi / 2 + 2)
         self.assertTrue(abs(calculated-expected) <= 1e-5)
         #alpha = 0.5j
-        calculated = RLpoint(0.5j, lambda x: np.sin(x), -100, 2, 100, zero_i_behavior='zero')
+        calculated = RLpoint(0.5j, lambda x: np.sin(x), -10, 2, 100, zero_i_behavior='zero')
         expected = np.sin(0.5j * np.pi / 2 + 2)
         self.assertTrue(abs(calculated-expected) <= 1e-5)
         #alpha = 0.1j
-        calculated = RLpoint(0.1j, lambda x: np.sin(x), -100, 2, 100, zero_i_behavior='zero')
+        calculated = RLpoint(0.1j, lambda x: np.sin(x), -10, 2, 100, zero_i_behavior='zero')
         expected = np.sin(0.1j * np.pi / 2 + 2)
         self.assertTrue(abs(calculated-expected) <= 1e-5)
 
