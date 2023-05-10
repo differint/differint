@@ -79,7 +79,7 @@ def Gamma(z):
         15 significant digits of accuracy for real z and 13
         significant digits for other values.
     """
-    if not (type(z) == type(1+1j)):
+    if not (type(z) == type(1+1j)) and 172 < z and z <= 171:
         if isPositiveInteger(-1 * z):
             return np.inf
         from math import gamma
