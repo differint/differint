@@ -69,3 +69,17 @@
  - updated Pochhammer symbol implementation to support a larger domain of inputs
  - 'checkValues' now supports numpy data types
  - 'Gamma' now uses `math.gamma` for real values to speed up computation
+
+2023-05-10
+
+### Added
+  - 'GLreal' - is equivalent to the previous behavior of `GL`
+  - '_0_i_Complex' - class which takes care of the exponent '0^i' by evaluating it as 0
+  - various tests of the accuracy of complex order derivatives
+
+### Modified
+  - Updated `checkValues` to take a new keyword argument specifying if the given algorithm supports complex values of alpha
+  - Changed implementation of `Gamma` to only use built-in `math.gamma` function if the input is within the range of supported inputs
+  - 'GL' changed to support complex inputs. This has slightly worse accuracy for purely real inputs, so 'GLreal' added which only supports real inputs, as with before this update
+  - Updated 'RL', 'RLpoint', and related helper functions to support complex inputs
+  - Added support for complex alpha in CaputoL1point and CaputoL2point; however complex order derivative is not as well defined for Caputo differintegrals, so warnings have been added to those functions if complex alpha is used
