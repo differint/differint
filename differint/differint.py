@@ -3,6 +3,11 @@ from __future__ import print_function
 import numpy as np
 
 class _0_i_Complex(complex):
+    ''' Because 0^i is undefined, errors arise in certain coefficient calculations when `alpha` is
+        imaginary. Mathematically this is avoided by taking a limit and finding the result to be 0.
+        This class implements the right power function, and returns 0 when the base is 0, and 
+        calulates the power as usual otherwise.
+    '''
     def __rpow__(self, other):
         if other == 0:
             return 0
