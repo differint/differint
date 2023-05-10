@@ -338,7 +338,7 @@ def GL(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 100):
     f_values, step_size = functionCheck(f_name, domain_start, domain_end, num_points)
     
     if alpha.imag == 0:
-        warn('The specified alpha is real, for better results you may want to use the `GLreal` function instead.')
+        print('The specified alpha is real, for better results you may want to use the `GLreal` function instead.')
 
     # Get the convolution filter.
     b_coeffs = GLcoeffs(alpha, num_points-1)
@@ -692,7 +692,7 @@ def CaputoL2point(alpha, f_name, domain_start=0, domain_end=1, num_points=100, *
     if alpha.imag == 0 and (alpha.real <= 1 or alpha.real >= 2):
         raise ValueError('Alpha must be in (1, 2) for this method.')
     elif alpha.imag != 0:
-        warn('Imaginary-order Caputo differintegrals may not be well-defined for many functions. The results are untested.')
+        print('Imaginary-order Caputo differintegrals may not be well-defined for many functions. The results are untested.')
 
     # Flip the domain limits if they are in the wrong order.
     if domain_start > domain_end:
