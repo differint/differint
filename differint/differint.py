@@ -311,7 +311,7 @@ def GL(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 100):
         
         Parameters
        ==========
-        alpha : float
+        alpha : float or complex
             The order of the differintegral to be computed.
         f_name : function handle, lambda function, list, or 1d-array of 
                  function values
@@ -495,7 +495,7 @@ def RLpoint(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 10
     
     Parameters
        ==========
-        alpha : float
+        alpha : float or complex
             The order of the differintegral to be computed.
         f_name : function handle, lambda function, list, or 1d-array of 
                  function values
@@ -554,7 +554,7 @@ def RL(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 100, *,
         
     Parameters
     ==========
-        alpha : float
+        alpha : float or complex
             The order of the differintegral to be computed.
         f_name : function handle, lambda function, list, or 1d-array of 
                  function values
@@ -612,7 +612,7 @@ def CaputoL1point(alpha, f_name, domain_start=0, domain_end=1, num_points=100, *
 
     Parameters
     ==========
-        alpha : float
+        alpha : float or complex
             The order of the differintegral to be computed. Must be in (0, 1)
         f_name : function handle, lambda function, list, or 1d-array of 
                  function values
@@ -673,7 +673,7 @@ def CaputoL2point(alpha, f_name, domain_start=0, domain_end=1, num_points=100, *
 
     Parameters
     ==========
-        alpha : float
+        alpha : float or complex
             The order of the differintegral to be computed. Must be in (1, 2).
         f_name : function handle or lambda function
             This is the function that is to be differintegrated.
@@ -684,6 +684,11 @@ def CaputoL2point(alpha, f_name, domain_start=0, domain_end=1, num_points=100, *
             differintegral is being evaluated. Default value is 1.
         num_points : integer
             The number of points in the domain. Default value is 100.
+        zero_i_behavior : str in ['ignore', 'zero'], default 'ignore'
+            How to interpret 0^i. By default, no special considerations are made,
+            however this will raise an error. Using 'zero' means 0^i is interpreted
+            as 0, as seen in 
+            https://math.stackexchange.com/questions/1101432/imaginary-order-derivative
     Output
     ======
         L2 : float
