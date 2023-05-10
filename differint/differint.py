@@ -478,7 +478,7 @@ def RLcoeffs(index_k, index_j, alpha, *, zero_i_behavior='ignore'):
         Calculus: Models and Numerical Methods. World Scientific.
     """
     
-    cast_type = complex
+    cast_type = type(alpha)
     if zero_i_behavior == 'zero':
         alpha = _0_i_Complex(alpha)
         cast_type = _0_i_Complex
