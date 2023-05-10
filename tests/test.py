@@ -11,6 +11,7 @@ poch_true_answer = 120
 size_coefficient_array = 20
 test_N = 512
 sqrtpi2 = 0.88622692545275794
+isinh_result = 1j * np.sinh(0.5*np.pi - 1j*1)
 truevaluepoly = 0.94031597258
 truevaluepoly_caputo = 1.50450555 # 8 / (3 * np.sqrt(np.pi))
 truevaluepoly_caputo_higher = 2 / Gamma(1.5)
@@ -27,6 +28,12 @@ checked_function2, test_stepsize2 = functionCheck(np.ones(test_N),0,1,test_N)
 # Get results for checking accuracy.
 GL_r = GL(0.5, lambda x: np.sqrt(x), 0, 1, test_N)
 GL_result = GL_r[-1]
+
+GLreal_r = GLreal(0.5, lambda x: np.sqrt(x), 0, 1, test_N)
+GLreal_result = GLreal_r[-1]
+
+GLcomplex_r = GL(1j, lambda x: np.sin(x), -100, 1, test_N * 100)
+GLcomplex_result = GLcomplex_r[-1]
 
 GLI_r = GLI(0.5, lambda x: np.sqrt(x), 0, 1, test_N)
 GLI_result = GLI_r[-1]
@@ -158,6 +165,12 @@ class TestAlgorithms(unittest.TestCase):
         
     def test_GL_accuracy_sqrt(self):
         self.assertTrue(abs(GL_result - sqrtpi2) <= 1e-4)
+
+    def test_GLreal_accuracy_sqrt(self):
+        self.assertTrue(abs(GL_result - sqrtpi2) <= 1e-4)
+
+    def test_GL_complex_sin(self):
+        self.assertTrue(abs(GLcomplex_result - isinh_result) <= 3e-2)
         
     def test_GLI_accuracy_sqrt(self):
         self.assertTrue(abs(GLI_result - sqrtpi2) <= 1e-4)
@@ -170,6 +183,39 @@ class TestAlgorithms(unittest.TestCase):
         
     def test_RL_accuracy_sqrt(self):
         self.assertTrue(abs(RL_result - sqrtpi2) <= 1e-4)
+
+    def test_RLpoint_accuracy_complex_sin(self):
+        # alpha = 0.9j
+        calculated = RLpoint(0.9j, lambda x: np.sin(x), -10, 2, 100, zero_i_behavior='zero')
+        expected = np.sin(0.9j * np.pi / 2 + 2)
+        self.assertTrue(abs(calculated-expected) <= 0.5)
+        #alpha = 0.5j
+        calculated = RLpoint(0.5j, lambda x: np.sin(x), -10, 2, 100, zero_i_behavior='zero')
+        expected = np.sin(0.5j * np.pi / 2 + 2)
+        self.assertTrue(abs(calculated-expected) <= 1e-1)
+        #alpha = 0.1j
+        calculated = RLpoint(0.1j, lambda x: np.sin(x), -10, 2, 100, zero_i_behavior='zero')
+        expected = np.sin(0.1j * np.pi / 2 + 2)
+        self.assertTrue(abs(calculated-expected) <= 1e-1)
+
+    def test_RL_accuracy_complex_sin(self):
+        # alpha = 0.9j
+        error_bound = 0.5
+        calculated = RL(0.9j, lambda x: np.sin(x), -100, 2, 2500, zero_i_behavior='zero')[-50:]
+        expected = np.sin(0.9j * np.pi / 2 + np.linspace(0, 2, 50))
+        assert all([abs(calculated[i].real - expected[i].real) < error_bound for i in range(len(expected))])
+        assert all([abs(calculated[i].imag - expected[i].imag) < error_bound for i in range(len(expected))])
+        #alpha = 0.5j
+        error_bound = 1e-1
+        calculated = RL(0.5j, lambda x: np.sin(x), -100, 2, 2500, zero_i_behavior='zero')[-50:]
+        expected = np.sin(0.5j * np.pi / 2 + np.linspace(0, 2, 50))
+        assert all([abs(calculated[i].real - expected[i].real) < error_bound for i in range(len(expected))])
+        assert all([abs(calculated[i].imag - expected[i].imag) < error_bound for i in range(len(expected))])
+        #alpha = 0.1j
+        calculated = RL(0.1j, lambda x: np.sin(x), -100, 2, 2500, zero_i_behavior='zero')[-50:]
+        expected = np.sin(0.1j * np.pi / 2 + np.linspace(0, 2, 50))
+        assert all([abs(calculated[i].real - expected[i].real) < error_bound for i in range(len(expected))])
+        assert all([abs(calculated[i].imag - expected[i].imag) < error_bound for i in range(len(expected))])
 
     def test_CaputoL1point_accuracy_sqrt(self):
         self.assertTrue(abs(CaputoL1point(0.5, lambda x: x**0.5, 0, 1., 1024)-sqrtpi2) <= 1e-2)

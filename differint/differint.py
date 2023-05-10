@@ -2,6 +2,17 @@ from __future__ import print_function
 
 import numpy as np
 
+class _0_i_Complex(complex):
+    ''' Because 0^i is undefined, errors arise in certain coefficient calculations when `alpha` is
+        imaginary. Mathematically this is avoided by taking a limit and finding the result to be 0.
+        This class implements the right power function, and returns 0 when the base is 0, and 
+        calulates the power as usual otherwise.
+    '''
+    def __rpow__(self, other):
+        if other == 0:
+            return 0
+        return other ** (self.real + 1j * self.imag)
+
 def isInteger(n):
     if n.imag:
         return False
@@ -73,7 +84,7 @@ def Gamma(z):
         15 significant digits of accuracy for real z and 13
         significant digits for other values.
     """
-    if not (type(z) == type(1+1j)):
+    if not (type(z) == type(1+1j)) and 172 < z and z <= 171:
         if isPositiveInteger(-1 * z):
             return np.inf
         from math import gamma
@@ -201,11 +212,14 @@ def GLcoeffs(alpha,n):
     """ 
     
     # Validate input.
-    isPositiveInteger(n)
+    assert isPositiveInteger(n)
     
     # Get generalized binomial coefficients.
     GL_filter = np.zeros(n+1,)
     GL_filter[0] = 1
+
+    if alpha.imag != 0:
+        GL_filter = GL_filter.astype(complex)
     
     for i in range(n):
         GL_filter[i+1] = GL_filter[i]*(-alpha + i)/(i+1)
@@ -251,7 +265,7 @@ def GLpoint(alpha, f_name, domain_start = 0., domain_end = 1., num_points = 100)
         
     return GL_current*(num_points/(domain_end - domain_start))**alpha
 
-def GL(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 100):
+def GLreal(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 100):
     """ Computes the GL fractional derivative of a function for an entire array
         of function values.
         
@@ -291,6 +305,53 @@ def GL(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 100):
     F = np.fft.rfft(f_values)
     
     result = np.fft.irfft(F*B)*step_size**-alpha
+    
+    return result
+
+def GL(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 100):
+    """ Computes the GL fractional derivative of a function for an entire array
+        of function values. This supports complex alpha and input function, but
+        if your input is purely real you should probably use the `GLreal`
+        function.
+        
+        Parameters
+       ==========
+        alpha : float or complex
+            The order of the differintegral to be computed.
+        f_name : function handle, lambda function, list, or 1d-array of 
+                 function values
+            This is the function that is to be differintegrated.
+        domain_start : float
+            The left-endpoint of the function domain. Default value is 0.
+        domain_end : float
+            The right-endpoint of the function domain; the point at which the 
+            differintegral is being evaluated. Default value is 1.
+        num_points : integer
+            The number of points in the domain. Default value is 100.
+            
+        Examples:
+        >>> DF_poly = GL(-0.5, lambda x: x**2 - 1)
+        >>> DF_sqrt = GL(0.5, lambda x: np.sqrt(x), 0., 1., 100)
+    """
+    
+    # Flip the domain limits if they are in the wrong order.
+    if domain_start > domain_end:
+        domain_start, domain_end = domain_end, domain_start
+    
+    # Check inputs.
+    checkValues(alpha, domain_start, domain_end, num_points, support_complex_alpha=True)
+    f_values, step_size = functionCheck(f_name, domain_start, domain_end, num_points)
+    
+    if alpha.imag == 0:
+        print('The specified alpha is real, for better results you may want to use the `GLreal` function instead.')
+
+    # Get the convolution filter.
+    b_coeffs = GLcoeffs(alpha, num_points-1)
+    
+    # Fourier transforms for convolution filter and array of function values.
+    B = np.fft.fft(b_coeffs)
+    F = np.fft.fft(f_values)
+    result = np.fft.ifft(F*B)*step_size**-alpha
     
     return result
     
@@ -415,26 +476,31 @@ def CRONE(alpha, f_name):
     else:
         raise InputError(f_name, 'f_name must have dimension <= 2')
 
-def RLcoeffs(index_k, index_j, alpha):
+def RLcoeffs(index_k, index_j, alpha, *, zero_i_behavior='ignore'):
     """Calculates coefficients for the RL differintegral operator.
     
     see Baleanu, D., Diethelm, K., Scalas, E., and Trujillo, J.J. (2012). Fractional
         Calculus: Models and Numerical Methods. World Scientific.
     """
     
+    cast_type = type(alpha)
+    if zero_i_behavior == 'zero':
+        alpha = _0_i_Complex(alpha)
+        cast_type = _0_i_Complex
+
     if index_j == 0:
-        return ((index_k-1)**(1-alpha)-(index_k+alpha-1)*index_k**-alpha)
+        return ((index_k-1)**cast_type(1-alpha)-(index_k+alpha-1)*index_k**cast_type(-alpha))
     elif index_j == index_k:
         return 1
     else:
-        return ((index_k-index_j+1)**(1-alpha)+(index_k-index_j-1)**(1-alpha)-2*(index_k-index_j)**(1-alpha))
+        return ((index_k-index_j+1)**cast_type(1-alpha)+(index_k-index_j-1)**cast_type(1-alpha)-2*(index_k-index_j)**cast_type(1-alpha))
     
-def RLpoint(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 100):
+def RLpoint(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 100, *, zero_i_behavior='ignore'):
     """Calculate the RL differintegral at a point with the trapezoid rule.
     
     Parameters
        ==========
-        alpha : float
+        alpha : float or complex
             The order of the differintegral to be computed.
         f_name : function handle, lambda function, list, or 1d-array of 
                  function values
@@ -446,6 +512,11 @@ def RLpoint(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 10
             differintegral is being evaluated. Default value is 1.
         num_points : integer
             The number of points in the domain. Default value is 100.
+        zero_i_behavior : str in ['ignore', 'zero'], default 'ignore'
+            How to interpret 0^i. By default, no special considerations are made,
+            however this will raise an error. Using 'zero' means 0^i is interpreted
+            as 0, as seen in 
+            https://math.stackexchange.com/questions/1101432/imaginary-order-derivative
             
         Examples:
         >>> RL_sqrt = RLpoint(0.5, lambda x: np.sqrt(x))
@@ -457,38 +528,41 @@ def RLpoint(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 10
         domain_start, domain_end = domain_end, domain_start
     
     # Check inputs.
-    checkValues(alpha, domain_start, domain_end, num_points)
+    checkValues(alpha, domain_start, domain_end, num_points, support_complex_alpha=True)
     f_values, step_size = functionCheck(f_name, domain_start, domain_end, num_points)
     
     C = 1/Gamma(2-alpha)
     
     RL = 0
     for index_j in range(num_points):
-        coeff = RLcoeffs(num_points-1, index_j, alpha)
+        coeff = RLcoeffs(num_points-1, index_j, alpha, zero_i_behavior=zero_i_behavior)
         RL += coeff*f_values[index_j]
         
     RL *= C*step_size**-alpha
     return RL
 
-def RLmatrix(alpha, N):
+def RLmatrix(alpha, N, *, zero_i_behavior='ignore'):
     """ Define the coefficient matrix for the RL algorithm. """
-    
-    coeffMatrix = np.zeros((N,N))
+
+    matrix_type = float
+    if alpha.imag != 0:
+        matrix_type = complex
+    coeffMatrix = np.zeros((N,N), dtype=matrix_type)
     for i in range(N):
         for j in range(i):
-            coeffMatrix[i,j] = RLcoeffs(i,j,alpha)
+            coeffMatrix[i,j] = RLcoeffs(i,j,alpha, zero_i_behavior=zero_i_behavior)
     
     # Place 1 on the main diagonal.
     np.fill_diagonal(coeffMatrix,1)
     return coeffMatrix/Gamma(2-alpha)
 
-def RL(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 100):
+def RL(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 100, *, zero_i_behavior='ignore'):
     """ Calculate the RL algorithm using a trapezoid rule over 
         an array of function values.
         
     Parameters
     ==========
-        alpha : float
+        alpha : float or complex
             The order of the differintegral to be computed.
         f_name : function handle, lambda function, list, or 1d-array of 
                  function values
@@ -517,11 +591,11 @@ def RL(alpha, f_name, domain_start = 0.0, domain_end = 1.0, num_points = 100):
         domain_start, domain_end = domain_end, domain_start
     
     # Check inputs.
-    checkValues(alpha, domain_start, domain_end, num_points)
+    checkValues(alpha, domain_start, domain_end, num_points, support_complex_alpha=True)
     f_values, step_size = functionCheck(f_name, domain_start, domain_end, num_points)
     
     # Calculate the RL differintegral.
-    D = RLmatrix(alpha, num_points)
+    D = RLmatrix(alpha, num_points, zero_i_behavior=zero_i_behavior)
     RL = step_size**-alpha*np.dot(D, f_values)
     return RL
 
@@ -538,7 +612,7 @@ class GLIinterpolat:
         self.crr = (4-alpha*alpha)/4
         self.prv = alpha*(alpha-2)/8
 
-def CaputoL1point(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
+def CaputoL1point(alpha, f_name, domain_start=0, domain_end=1, num_points=100, *, zero_i_behavior='ignore'):
     ''' Calculate the Caputo derivative of a function at a point using the L1 method.
 
     see Karniadakis, G.E.. (2019). Handbook of Fractional Calculus with Applications
@@ -546,7 +620,7 @@ def CaputoL1point(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
 
     Parameters
     ==========
-        alpha : float
+        alpha : float or complex
             The order of the differintegral to be computed. Must be in (0, 1)
         f_name : function handle, lambda function, list, or 1d-array of 
                  function values
@@ -558,33 +632,46 @@ def CaputoL1point(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
             differintegral is being evaluated. Default value is 1.
         num_points : integer
             The number of points in the domain. Default value is 100.
+        zero_i_behavior : str in ['ignore', 'zero'] default 'ignore'
+            How to interpret 0^i. By default, no special considerations are made,
+            however this will raise an error. Using 'zero' means 0^i is interpreted
+            as 0, as seen in 
+            https://math.stackexchange.com/questions/1101432/imaginary-order-derivative
     Output
     ======
         L1 : float
             The Caputo L1 integral evaluated at the corresponding point.
     '''
 
-    if alpha <= 0 or alpha >= 1:
+    if alpha.imag == 0 and (alpha.real <= 0 or alpha.real >= 1):
         raise ValueError('Alpha must be in (0, 1) for this method.')
+    elif alpha.imag != 0:
+        print('Imaginary-order Caputo differintegrals may not be well-defined for many functions. The results are untested.')
 
     # Flip the domain limits if they are in the wrong order.
     if domain_start > domain_end:
         domain_start, domain_end = domain_end, domain_start
     
     # Check inputs.
-    checkValues(alpha, domain_start, domain_end, num_points)
+    checkValues(alpha, domain_start, domain_end, num_points, support_complex_alpha=True)
     f_values, step_size = functionCheck(f_name, domain_start, domain_end, num_points)
 
     f_values = np.array(f_values)
     j_values = np.arange(0, num_points-1)
-    coefficients = (j_values + 1) ** (1 - alpha) - (j_values) ** (1 - alpha)
+
+    if zero_i_behavior == 'ignore':
+        coefficients = (j_values + 1) ** (1 - alpha) - (j_values) ** (1 - alpha)
+    elif zero_i_behavior == 'zero':
+        coefficients = (j_values[1:] + 1) ** (1 - alpha) - (j_values[1:]) ** (1 - alpha)
+        coefficients = np.append([1 ** (1 - alpha)], coefficients)
+
     f_differences = f_values[1:] - f_values[:-1]
     f_differences = f_differences[::-1]
     L1 = 1 / Gamma(2 - alpha) * np.sum(np.multiply(coefficients * step_size**(-alpha), f_differences))
     
     return L1
 
-def CaputoL2point(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
+def CaputoL2point(alpha, f_name, domain_start=0, domain_end=1, num_points=100, *, zero_i_behavior='ignore'):
     ''' Calculate the Caputo derivative of a function at a point using the L2 method.
         A note: this method requires evaluation of the point f(domain_end + step size),
         and currently will only work if `f_name` is a callable function.
@@ -594,7 +681,7 @@ def CaputoL2point(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
 
     Parameters
     ==========
-        alpha : float
+        alpha : float or complex
             The order of the differintegral to be computed. Must be in (1, 2).
         f_name : function handle or lambda function
             This is the function that is to be differintegrated.
@@ -605,28 +692,39 @@ def CaputoL2point(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
             differintegral is being evaluated. Default value is 1.
         num_points : integer
             The number of points in the domain. Default value is 100.
+        zero_i_behavior : str in ['ignore', 'zero'], default 'ignore'
+            How to interpret 0^i. By default, no special considerations are made,
+            however this will raise an error. Using 'zero' means 0^i is interpreted
+            as 0, as seen in 
+            https://math.stackexchange.com/questions/1101432/imaginary-order-derivative
     Output
     ======
         L2 : float
             The Caputo L2 integral evaluated at the corresponding point.
     '''
-    if alpha <= 1 or alpha >= 2:
+    if alpha.imag == 0 and (alpha.real <= 1 or alpha.real >= 2):
         raise ValueError('Alpha must be in (1, 2) for this method.')
+    elif alpha.imag != 0:
+        print('Imaginary-order Caputo differintegrals may not be well-defined for many functions. The results are untested.')
+
     # Flip the domain limits if they are in the wrong order.
     if domain_start > domain_end:
         domain_start, domain_end = domain_end, domain_start
     
     # Check inputs.
-    checkValues(alpha, domain_start, domain_end, num_points)
+    checkValues(alpha, domain_start, domain_end, num_points, support_complex_alpha=True)
     f_values, step_size = functionCheck(f_name, domain_start, domain_end, num_points)
 
-    def b_coes(alpha, j):
-        return (j + 1) ** (2 - alpha) - j ** (2 - alpha)
+    def b_coes(alpha, j, zero_i_behavior):
+        if zero_i_behavior == 'ignore':
+            return (j + 1) ** (2 - alpha) - j ** (2 - alpha)
+        elif zero_i_behavior == 'zero':
+            return (j + 1) ** _0_i_Complex(2 - alpha) - j ** _0_i_Complex(2 - alpha)
 
     # start with the point outside of the domain
-    L2 = b_coes(alpha, 0) * (f_values[num_points - 2] + f_name(num_points * step_size) - 2 * f_values[num_points - 1]) #f_name(num_points * step_size)
+    L2 = b_coes(alpha, 0, zero_i_behavior) * (f_values[num_points - 2] + f_name(num_points * step_size) - 2 * f_values[num_points - 1]) #f_name(num_points * step_size)
     for k in range(1, num_points - 2):
-        L2 += b_coes(alpha, k) * (f_values[num_points - 2 - k] + f_values[num_points - k] - 2 * f_values[num_points - k - 1])
+        L2 += b_coes(alpha, k, zero_i_behavior) * (f_values[num_points - 2 - k] + f_values[num_points - k] - 2 * f_values[num_points - k - 1])
     return L2 * step_size ** (-1 * alpha) / Gamma(3 - alpha)
 
 
