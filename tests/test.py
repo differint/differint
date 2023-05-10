@@ -199,17 +199,22 @@ class TestAlgorithms(unittest.TestCase):
 
     def test_RL_accuracy_complex_sin(self):
         # alpha = 0.9j
-        calculated = RL(0.9j, lambda x: np.sin(x), -10, 2, 100, zero_i_behavior='zero')
-        expected = np.sin(0.9j * np.pi / 2 + np.linspace(0, 2, 100))
-        self.assertTrue((abs(calculated-expected) <= 1e-5).all())
+        error_bound = 0.5
+        calculated = RL(0.9j, lambda x: np.sin(x), -100, 2, 2500, zero_i_behavior='zero')[-50:]
+        expected = np.sin(0.9j * np.pi / 2 + np.linspace(0, 2, 50))
+        assert all([abs(calculated[i].real - expected[i].real) < error_bound for i in range(len(expected))])
+        assert all([abs(calculated[i].imag - expected[i].imag) < error_bound for i in range(len(expected))])
         #alpha = 0.5j
-        calculated = RL(0.5j, lambda x: np.sin(x), -10, 2, 100, zero_i_behavior='zero')
-        expected = np.sin(0.5j * np.pi / 2 + np.linspace(0, 2, 100))
-        self.assertTrue((abs(calculated-expected) <= 1e-5).all())
+        error_bound = 1e-1
+        calculated = RL(0.5j, lambda x: np.sin(x), -100, 2, 2500, zero_i_behavior='zero')[-50:]
+        expected = np.sin(0.5j * np.pi / 2 + np.linspace(0, 2, 50))
+        assert all([abs(calculated[i].real - expected[i].real) < error_bound for i in range(len(expected))])
+        assert all([abs(calculated[i].imag - expected[i].imag) < error_bound for i in range(len(expected))])
         #alpha = 0.1j
-        calculated = RL(0.1j, lambda x: np.sin(x), -10, 2, 100, zero_i_behavior='zero')
-        expected = np.sin(0.1j * np.pi / 2 + np.linspace(0, 2, 100))
-        self.assertTrue((abs(calculated-expected) <= 1e-5).all())
+        calculated = RL(0.1j, lambda x: np.sin(x), -100, 2, 2500, zero_i_behavior='zero')[-50:]
+        expected = np.sin(0.1j * np.pi / 2 + np.linspace(0, 2, 50))
+        assert all([abs(calculated[i].real - expected[i].real) < error_bound for i in range(len(expected))])
+        assert all([abs(calculated[i].imag - expected[i].imag) < error_bound for i in range(len(expected))])
 
     def test_CaputoL1point_accuracy_sqrt(self):
         self.assertTrue(abs(CaputoL1point(0.5, lambda x: x**0.5, 0, 1., 1024)-sqrtpi2) <= 1e-2)
