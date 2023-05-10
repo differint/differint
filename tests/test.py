@@ -184,17 +184,18 @@ class TestAlgorithms(unittest.TestCase):
         self.assertTrue(abs(RL_result - sqrtpi2) <= 1e-4)
 
     def test_RL_accuracy_complex_sin(self):
+    def test_RLpoint_accuracy_complex_sin(self):
         # alpha = 0.9j
         calculated = RLpoint(0.9j, lambda x: np.sin(x), -100, 2, 100, zero_i_behavior='zero')
-        expected = np.sin(0.9j * np.pi / 2 + np.linspace(0, 2, 100))
-        self.assertTrue((abs(calculated-expected) <= 1e-5).all())
+        expected = np.sin(0.9j * np.pi / 2 + 2)
+        self.assertTrue(abs(calculated-expected) <= 1e-5)
         #alpha = 0.5j
         calculated = RLpoint(0.5j, lambda x: np.sin(x), -100, 2, 100, zero_i_behavior='zero')
-        expected = np.sin(0.5j * np.pi / 2 + np.linspace(0, 2, 100))
+        expected = np.sin(0.5j * np.pi / 2 + 2)
         self.assertTrue(abs(calculated-expected) <= 1e-5)
         #alpha = 0.1j
         calculated = RLpoint(0.1j, lambda x: np.sin(x), -100, 2, 100, zero_i_behavior='zero')
-        expected = np.sin(0.1j * np.pi / 2 + np.linspace(0, 2, 100))
+        expected = np.sin(0.1j * np.pi / 2 + 2)
         self.assertTrue(abs(calculated-expected) <= 1e-5)
 
     def test_CaputoL1point_accuracy_sqrt(self):
