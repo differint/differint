@@ -625,7 +625,7 @@ def CaputoL2point(alpha, f_name, domain_start=0, domain_end=1, num_points=100):
 
     # start with the point outside of the domain
     L2 = b_coes(alpha, 0) * (f_values[num_points - 2] + f_name(num_points * step_size) - 2 * f_values[num_points - 1]) #f_name(num_points * step_size)
-    for k in range(1, num_points - 2):
+    for k in range(1, num_points - 1):
         L2 += b_coes(alpha, k) * (f_values[num_points - 2 - k] + f_values[num_points - k] - 2 * f_values[num_points - k - 1])
     return L2 * step_size ** (-1 * alpha) / Gamma(3 - alpha)
 
