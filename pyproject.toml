@@ -1,0 +1,35 @@
+[build-system]
+build-backend = "hatchling.build"
+requires = [
+    "hatchling>=1.10",
+]
+
+[project]
+name = "differint"
+version = "1.0.0"
+description = "Collection of algorithms for numerically calculating fractional derivatives"
+readme = "README.md"
+keywords = [
+    "fractional-differential-equations",
+    "quadrature",
+    "ivp",
+]
+license = "MIT"
+maintainers = [{ name = "Matthew Adams", email = "Matthew.Adams@ucalgary.ca" }]
+authors = [{ name = "Matthew Adams", email = "Matthew.Adams@ucalgary.ca" }]
+requires-python = ">=3.3"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.3",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Programming Language :: Python :: 3.3",
+    "Programming Language :: Python :: 3.4",
+    "Programming Language :: Python :: 3.5",
+]
+dependencies = ["numpy"]
+optional-dependencies.tests = ["nose"]
+
+[project.urls]
+Repository = "http://github.com/differint/differint"
