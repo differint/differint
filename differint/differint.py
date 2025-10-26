@@ -373,7 +373,6 @@ def CRONE(alpha, f_name):
         if (siz % 2) != 0:
             w = siz
             stop = int((siz-1)/2)
-            print(stop)
         else:
             w = siz + 1
             stop = int(siz/2)
